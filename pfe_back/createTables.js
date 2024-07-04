@@ -7,39 +7,96 @@ CREATE TABLE IF NOT EXISTS role (
   name VARCHAR(100) NOT NULL
 )
 `;
-
+const createModeleCamionTable = `
+CREATE TABLE IF NOT EXISTS ModeleCamion (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL
+)
+`;
+const createCamionTable = `
+CREATE TABLE IF NOT EXISTS Camion (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  matricule VARCHAR(100) NOT NULL,
+  couleur VARCHAR(50) NOT NULL,
+  idModele INT NOT NULL,
+  FOREIGN KEY (idModele) REFERENCES ModeleCamion(id)
+)
+`;
+const createModeleTrashTable = `
+CREATE TABLE IF NOT EXISTS ModeleTrash (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  volume INT NOT NULL,
+  couleur VARCHAR(50)
+)
+`;
+const createTrashTable = `
+CREATE TABLE IF NOT EXISTS Trash (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  matricule VARCHAR(100) NOT NULL,
+  couleur VARCHAR(50) NOT NULL,
+  idModele INT NOT NULL,
+  idRegion INT NULL,
+  longitude INT NOT NULL,
+  latitude INT NOT NULL,
+  quantity INT NOT NULL DEFAULT 0,
+  utilisable boolean DEFAULT TRUE,
+  FOREIGN KEY (idRegion) REFERENCES Region(id),
+  FOREIGN KEY (idModele) REFERENCES ModeleTrash(id)
+)
+`;
+const createRegionTable = `
+CREATE TABLE IF NOT EXISTS Region (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nom VARCHAR(100) NOT NULL,
+  population INT NOT NULL
+)
+`;
+const createDepotTable = `
+CREATE TABLE IF NOT EXISTS Depot (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  longitude INT NOT NULL,
+  latitude INT NOT NULL,
+  idRegion INT NOT NULL,
+  FOREIGN KEY (idRegion) REFERENCES Region(id)
+)
+`;
+const createCoordonneesTable = `
+CREATE TABLE IF NOT EXISTS Coordonnees (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  longitude INT NOT NULL,
+  latitude INT NOT NULL,
+  idRegion INT NOT NULL,
+  FOREIGN KEY (idRegion) REFERENCES Region(id)
+)
+`;
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) NOT NULL UNIQUE,
   email VARCHAR(100) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
-  role_id INT,
-  FOREIGN KEY (role_id) REFERENCES role(id)
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  sexe boolean DEFAULT FALSE,
+  date_begin DATE,
+  numPermis INT,
+  idRole INT,
+  idCamion INT NULL,
+  idDepot INT NULL,
+  FOREIGN KEY (idCamion) REFERENCES Camion(id),
+  FOREIGN KEY (idDepot) REFERENCES Depot(id),
+  FOREIGN KEY (idRole) REFERENCES role(id)
 )
 `;
 
-const createPostsTable = `
-CREATE TABLE IF NOT EXISTS posts (
+const createParamsTable = `
+CREATE TABLE IF NOT EXISTS Params (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  content TEXT NOT NULL,
-  user_id INT,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  cle VARCHAR(100) NOT NULL,
+  valeur VARCHAR(100) NOT NULL
 )
 `;
-
-const createCommentsTable = `
-CREATE TABLE IF NOT EXISTS comments (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  content TEXT NOT NULL,
-  post_id INT,
-  user_id INT,
-  FOREIGN KEY (post_id) REFERENCES posts(id),
-  FOREIGN KEY (user_id) REFERENCES users(id)
-)
-`;
-
 // Function to execute a query and log the result
 const executeQuery = (query) => {
   return new Promise((resolve, reject) => {
@@ -59,9 +116,15 @@ const executeQuery = (query) => {
 const createTables = async () => {
   try {
     await executeQuery(createRoleTable);
+    await executeQuery(createModeleCamionTable);
+    await executeQuery(createCamionTable);
+    await executeQuery(createModeleTrashTable);
+    await executeQuery(createRegionTable);
+    await executeQuery(createTrashTable);
+    await executeQuery(createDepotTable);
+    await executeQuery(createCoordonneesTable);
     await executeQuery(createUsersTable);
-    await executeQuery(createPostsTable);
-    await executeQuery(createCommentsTable);
+    await executeQuery(createParamsTable);
     console.log('All tables created or already exist.');
   } catch (err) {
     console.error('Error creating tables:', err);
