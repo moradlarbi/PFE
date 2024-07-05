@@ -14,13 +14,12 @@ CREATE TABLE IF NOT EXISTS ModeleCamion (
 )
 `;
 const createCamionTable = `
-CREATE TABLE IF NOT EXISTS Camion (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  matricule VARCHAR(100) NOT NULL,
-  couleur VARCHAR(50) NOT NULL,
-  idModele INT NOT NULL,
-  FOREIGN KEY (idModele) REFERENCES ModeleCamion(id)
-)
+INSERT INTO ModeleCamion (name) VALUES ('Volvo FH16');
+INSERT INTO ModeleCamion (name) VALUES ('Scania R500');
+INSERT INTO ModeleCamion (name) VALUES ('Mercedes-Benz Actros');
+INSERT INTO ModeleCamion (name) VALUES ('MAN TGX');
+INSERT INTO ModeleCamion (name) VALUES ('DAF XF');
+
 `;
 const createModeleTrashTable = `
 CREATE TABLE IF NOT EXISTS ModeleTrash (
@@ -37,8 +36,8 @@ CREATE TABLE IF NOT EXISTS Trash (
   couleur VARCHAR(50) NOT NULL,
   idModele INT NOT NULL,
   idRegion INT NULL,
-  longitude INT NOT NULL,
-  latitude INT NOT NULL,
+  longitude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   quantity INT NOT NULL DEFAULT 0,
   utilisable boolean DEFAULT TRUE,
   FOREIGN KEY (idRegion) REFERENCES Region(id),
@@ -55,8 +54,8 @@ CREATE TABLE IF NOT EXISTS Region (
 const createDepotTable = `
 CREATE TABLE IF NOT EXISTS Depot (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  longitude INT NOT NULL,
-  latitude INT NOT NULL,
+  longitude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   idRegion INT NOT NULL,
   FOREIGN KEY (idRegion) REFERENCES Region(id)
 )
@@ -64,8 +63,8 @@ CREATE TABLE IF NOT EXISTS Depot (
 const createCoordonneesTable = `
 CREATE TABLE IF NOT EXISTS Coordonnees (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  longitude INT NOT NULL,
-  latitude INT NOT NULL,
+  longitude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   idRegion INT NOT NULL,
   FOREIGN KEY (idRegion) REFERENCES Region(id)
 )
