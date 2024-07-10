@@ -1,11 +1,17 @@
-// routes/camionRoutes.js
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteCamion,
+} from '../models/camion.js';
+
 const router = express.Router();
-const Camion = require('../models/camion');
 
 // Get all Camions
 router.get('/', (req, res) => {
-  Camion.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -17,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single Camion by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  Camion.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -29,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new Camion
 router.post('/', (req, res) => {
   const { matricule, couleur, idModele } = req.body;
-  Camion.create(matricule, couleur, idModele, (err, results) => {
+  create(matricule, couleur, idModele, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -42,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { matricule, couleur, idModele } = req.body;
-  Camion.update(id, matricule, couleur, idModele, (err) => {
+  update(id, matricule, couleur, idModele, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -54,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a Camion
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  Camion.delete(id, (err) => {
+  deleteCamion(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -63,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

@@ -1,8 +1,9 @@
-const mysql = require('mysql');
+import mysql from 'mysql';
 
 // Load environment variables from .env file (only needed for local development)
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+  const dotenv = await import('dotenv');
+  dotenv.config();
 }
 
 const connection = mysql.createConnection(process.env.JAWSDB_URL);
@@ -15,4 +16,4 @@ connection.connect((err) => {
   console.log('Connected to the database as id ' + connection.threadId);
 });
 
-module.exports = connection;
+export default connection;

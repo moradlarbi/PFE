@@ -1,11 +1,17 @@
-// routes/modeleCamionRoutes.js
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  deleteModeleCamion,
+  update
+} from '../models/modeleCamion.js';
+
 const router = express.Router();
-const ModeleCamion = require('../models/modeleCamion');
 
 // Get all ModeleCamions
 router.get('/', (req, res) => {
-  ModeleCamion.getAll((err, results) => {
+   getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -17,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single ModeleCamion by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  ModeleCamion.getById(id, (err, results) => {
+   getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -29,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new ModeleCamion
 router.post('/', (req, res) => {
   const { name } = req.body;
-  ModeleCamion.create(name, (err, results) => {
+   create(name, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -42,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { name } = req.body;
-  ModeleCamion.update(id, name, (err) => {
+   update(id, name, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -54,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a ModeleCamion
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  ModeleCamion.delete(id, (err) => {
+   deleteModeleCamion(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -63,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

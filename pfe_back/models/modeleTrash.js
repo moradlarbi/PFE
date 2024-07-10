@@ -1,30 +1,36 @@
-const db = require('../db');
+import db from '../db.js';
 
-const ModeleTrash = {
-  getAll: (callback) => {
-    const query = 'SELECT * FROM ModeleTrash';
-    db.query(query, callback);
-  },
-
-  getById: (id, callback) => {
-    const query = 'SELECT * FROM ModeleTrash WHERE id = ?';
-    db.query(query, [id], callback);
-  },
-
-  create: (name, volume, couleur, callback) => {
-    const query = 'INSERT INTO ModeleTrash (name, volume, couleur) VALUES (?, ?, ?)';
-    db.query(query, [name, volume, couleur], callback);
-  },
-
-  update: (id, name, volume, couleur, callback) => {
-    const query = 'UPDATE ModeleTrash SET name = ?, volume = ?, couleur = ? WHERE id = ?';
-    db.query(query, [name, volume, couleur, id], callback);
-  },
-
-  delete: (id, callback) => {
-    const query = 'DELETE FROM ModeleTrash WHERE id = ?';
-    db.query(query, [id], callback);
-  }
+const getAll = (callback) => {
+  const query = 'SELECT * FROM ModeleTrash';
+  db.query(query, callback);
 };
 
-module.exports = ModeleTrash;
+const getById = (id, callback) => {
+  const query = 'SELECT * FROM ModeleTrash WHERE id = ?';
+  db.query(query, [id], callback);
+};
+
+const create = (name, volume, couleur, callback) => {
+  const query = 'INSERT INTO ModeleTrash (name, volume, couleur) VALUES (?, ?, ?)';
+  db.query(query, [name, volume, couleur], callback);
+};
+
+const update = (id, name, volume, couleur, callback) => {
+  const query = 'UPDATE ModeleTrash SET name = ?, volume = ?, couleur = ? WHERE id = ?';
+  db.query(query, [name, volume, couleur, id], callback);
+};
+
+const deleteModeleTrash = (id, callback) => {
+  const query = 'DELETE FROM ModeleTrash WHERE id = ?';
+  db.query(query, [id], callback);
+};
+
+export { getAll, getById, create, update, deleteModeleTrash };
+
+export default {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteModeleTrash,
+};
