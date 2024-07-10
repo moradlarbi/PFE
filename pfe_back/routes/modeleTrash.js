@@ -1,10 +1,17 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteModeleTrash,
+} from '../models/modeleTrash.js';
+
 const router = express.Router();
-const ModeleTrash = require('../models/modeleTrash');
 
 // Get all ModeleTrash
 router.get('/', (req, res) => {
-  ModeleTrash.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -16,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single ModeleTrash by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  ModeleTrash.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -28,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new ModeleTrash
 router.post('/', (req, res) => {
   const { name, volume, couleur } = req.body;
-  ModeleTrash.create(name, volume, couleur, (err, results) => {
+  create(name, volume, couleur, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -41,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { name, volume, couleur } = req.body;
-  ModeleTrash.update(id, name, volume, couleur, (err) => {
+  update(id, name, volume, couleur, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -53,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a ModeleTrash
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  ModeleTrash.delete(id, (err) => {
+  deleteModeleTrash(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -62,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

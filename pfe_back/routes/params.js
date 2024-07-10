@@ -1,10 +1,17 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteParams
+} from '../models/params.js';
+
 const router = express.Router();
-const Params = require('../models/params');
 
 // Get all Params
 router.get('/', (req, res) => {
-  Params.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -16,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single Params by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  Params.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -28,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new Params
 router.post('/', (req, res) => {
   const { cle, valeur } = req.body;
-  Params.create(cle, valeur, (err, results) => {
+  create(cle, valeur, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -41,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { cle, valeur } = req.body;
-  Params.update(id, cle, valeur, (err) => {
+  update(id, cle, valeur, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -53,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a Params
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  Params.delete(id, (err) => {
+  deleteParams(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -62,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

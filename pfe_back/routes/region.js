@@ -1,10 +1,17 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteRegion
+} from '../models/region.js';
+
 const router = express.Router();
-const Region = require('../models/region');
 
 // Get all Regions
 router.get('/', (req, res) => {
-  Region.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -16,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single Region by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  Region.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -28,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new Region
 router.post('/', (req, res) => {
   const { nom, population } = req.body;
-  Region.create(nom, population, (err, results) => {
+  create(nom, population, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -41,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { nom, population } = req.body;
-  Region.update(id, nom, population, (err) => {
+  update(id, nom, population, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -53,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a Region
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  Region.delete(id, (err) => {
+  deleteRegion(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -62,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

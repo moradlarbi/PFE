@@ -1,10 +1,17 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  deleteDepot,
+  update
+} from '../models/depot.js';
+
 const router = express.Router();
-const Depot = require('../models/depot');
 
 // Get all Depots
 router.get('/', (req, res) => {
-  Depot.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -16,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single Depot by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  Depot.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -28,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new Depot
 router.post('/', (req, res) => {
   const { longitude, latitude, idRegion } = req.body;
-  Depot.create(longitude, latitude, idRegion, (err, results) => {
+  create(longitude, latitude, idRegion, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -41,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { longitude, latitude, idRegion } = req.body;
-  Depot.update(id, longitude, latitude, idRegion, (err) => {
+  update(id, longitude, latitude, idRegion, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -53,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a Depot
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  Depot.delete(id, (err) => {
+  delete(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -62,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

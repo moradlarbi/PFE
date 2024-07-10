@@ -1,10 +1,17 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteCoordonnees,
+} from '../models/coordonnees.js';
+
 const router = express.Router();
-const Coordonnees = require('../models/coordonnees');
 
 // Get all Coordonnees
 router.get('/', (req, res) => {
-  Coordonnees.getAll((err, results) => {
+  getAll((err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -16,7 +23,7 @@ router.get('/', (req, res) => {
 // Get a single Coordonnees by id
 router.get('/:id', (req, res) => {
   const id = req.params.id;
-  Coordonnees.getById(id, (err, results) => {
+  getById(id, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -28,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Create a new Coordonnees
 router.post('/', (req, res) => {
   const { longitude, latitude, idRegion } = req.body;
-  Coordonnees.create(longitude, latitude, idRegion, (err, results) => {
+  create(longitude, latitude, idRegion, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -41,7 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { longitude, latitude, idRegion } = req.body;
-  Coordonnees.update(id, longitude, latitude, idRegion, (err) => {
+  update(id, longitude, latitude, idRegion, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -53,7 +60,7 @@ router.put('/:id', (req, res) => {
 // Delete a Coordonnees
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  Coordonnees.delete(id, (err) => {
+  deleteCoordonnees(id, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -62,4 +69,4 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
