@@ -4,7 +4,8 @@ import {
   findById,
   create,
   update,
-  deleteUser
+  deleteUser,
+  updateActiveStatus
 } from '../models/user.js';
 
 const router = express.Router();
@@ -19,9 +20,10 @@ const constructQuery = (query) => {
 
   // Filters
   if (query.filters) {
-    const filters = JSON.parse(query.filters);
-    for (const [key, value] of Object.entries(filters)) {
-      whereClauses.push(`${key} = ${value}`);
+    for (const [key, value] of Object.entries(query.filters)) {
+      if (typeof value === 'object' && '$eq' in value) {
+        whereClauses.push(`${key} = ${value['$eq']}`);
+      }
     }
   }
 
@@ -36,10 +38,9 @@ const constructQuery = (query) => {
 
   // Pagination
   if (query.pagination) {
-    const pagination = JSON.parse(query.pagination);
-    if (pagination.page && pagination.pageSize) {
-      const page = parseInt(pagination.page, 10);
-      const pageSize = parseInt(pagination.pageSize, 10);
+    if (query.pagination.page && query.pagination.pageSize) {
+      const page = parseInt(query.pagination.page, 10);
+      const pageSize = parseInt(query.pagination.pageSize, 10);
       offsetClause = `OFFSET ${(page - 1) * pageSize}`;
       limitClause = `LIMIT ${pageSize}`;
     }
@@ -65,20 +66,20 @@ const constructQuery = (query) => {
 router.get('/', async (req, res) => {
   try {
     const query = constructQuery(req.query);
-    console.log(query)
     const results = await new Promise((resolve, reject) => {
       findAll(query, (err, results) => {
-        if (err) reject(err);
-        else resolve(results);
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else {resolve(results)};
       });
     });
-    console.log(results)
     res.status(200).json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
 // Get user by ID
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
@@ -110,7 +111,26 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+router.put('/active/:id', async (req, res) => {
+  const id = req.params.id;
+  const { active } = req.body;
+  console.log(active,id)
+  // if (typeof id !== 'number' || typeof active !== 'boolean') {
+  //   return res.status(400).json({ error: 'Invalid input' });
+  // }
 
+  try {
+    await new Promise((resolve, reject) => {
+      updateActiveStatus(id, active, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+    res.status(200).json({ message: 'User active status updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Update user
 router.put('/:id', async (req, res) => {
   const id = req.params.id;

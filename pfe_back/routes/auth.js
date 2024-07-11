@@ -20,7 +20,7 @@ router.post(
   async (req, res) => {
     try {
       console.log(req.body)
-      const { username, email, password, firstName, lastName, sexe, numPermis, idRole } = req.body;
+      const { username, email, password, first_name, last_name, sexe, numPermis, idRole,date_begin } = req.body;
 
       // Check if user already exists with the given email
       const existingUser = await getUserByEmail(email);
@@ -38,11 +38,11 @@ router.post(
       const newUser = await createUser({
         email,
         password: hashedPassword,
-        username,
-        first_name: firstName, last_name: lastName, sexe, 
-        numPermis: numPermis,
+        username: last_name + first_name,
+        first_name, last_name, sexe, 
+        numPermis,
         idRole,
-        date_begin: dateBegin?? new Date()
+        date_begin: date_begin?? new Date()
       });
 
       res.status(201).json({ status: 201, message: "User created successfully", data: newUser });

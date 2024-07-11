@@ -5,12 +5,11 @@ import CustomDataGrid from '../components/CustomDataGrid';
 import { Columns } from '../types';
 import {  useTheme } from "@mui/material/styles";
 import { GridCellParams } from '@mui/x-data-grid';
-import { editOperation, editStatus } from '../api/driver';
+import { editOperation, editStatus } from '../api/camion';
 import Swal from 'sweetalert2';
 import { Border } from '../components/Border';
-import NewDriver from '../components/CreationItems/NewDriver';
-import moment from 'moment';
-const DriverPage = () => {
+import NewCamion from '../components/CreationItems/NewCamion';
+const CamionPage = () => {
     const [refresh, setrefresh] = useState(false);
     const theme = useTheme()
     const [selectedRows, setSelectedRows] = useState<number[]>();
@@ -25,15 +24,8 @@ const DriverPage = () => {
     }
     const columns: Columns[] = [
         { field: "id", headerName: "Réf", type: "string", width: 100 },
-        { field: "last_name", headerName: "Nom", type: "string", flex: 1, add: true,edit: true,},
-        { field: "first_name", headerName: "Prénom", type: "string", flex: 1, add: true,edit: true,},
-        { field: "numPermis", headerName: "N° permis", type: "string", flex: 1, add: true,edit: true,},
-        { field: "sexe", headerName: "Sexe", type: "string", flex: 1,valueGetter: (params: any) =>  {
-          return `${params? "Homme":"Femme"}`
-        }, add: true,edit: true,},
-        { field: "date_begin", headerName: "Date début", type: "string", flex: 1,valueGetter: (params: any) =>  {
-          return moment(params).format('DD/MM/YYYY');;
-        }, add: true,edit: true,},
+        { field: "matricule", headerName: "N° matricule", type: "string", flex: 1, add: true,edit: true,},
+        { field: "couleur", headerName: "Couleur", type: "string", flex: 1, add: true,edit: true,},
         {
             field: "active",
             headerName: "Etat",
@@ -117,7 +109,7 @@ const DriverPage = () => {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: `${values.first_name} a bien été mis a jour`,
+              title: `Le camion ${values.id} a bien été mis a jour`,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -127,7 +119,7 @@ const DriverPage = () => {
             Swal.fire({
               position: "center",
               icon: "error",
-              title: `${values.first_name} n'a pas mis a jour`,
+              title: `Le camion ${values.id} n'a pas mis a jour`,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -138,7 +130,7 @@ const DriverPage = () => {
             Swal.fire({
               position: "center",
               icon: "error",
-              title: `${values.first_name} n'a pas mis a jour`,
+              title: `Le camion ${values.id} n'a pas mis a jour`,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -153,7 +145,7 @@ const DriverPage = () => {
 
   return (
       <>
-      {openDialog && <NewDriver handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
+      {openDialog && <NewCamion handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
             Swal.fire({
               icon: "warning",
               title: "Are you sure?",
@@ -272,4 +264,4 @@ const DriverPage = () => {
   )
 }
 
-export default DriverPage;
+export default CamionPage;

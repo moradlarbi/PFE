@@ -137,14 +137,12 @@ export default function CustomDataGrid({
       )
       .then((res: AxiosResponse<any, any>) => {
         if (res.status == 200) {
+          console.log(res.data)
           dispatch({
             type: "ROWS",
             payload: {
-              data: res.data?.data?.map((i: { id: any; attributes: any; }) => ({
-                id: i.id,
-                ...i.attributes,
-              })),
-              total: res.data?.meta?.pagination?.total,
+              data: res.data,
+              total: res.data?.length,
             },
           });
           setLoading(false);
