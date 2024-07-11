@@ -15,33 +15,21 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { date, object, string, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addOperation, editOperation } from "../../api/driver";
+import { addOperation, editOperation } from "../../api/camion";
 import Swal from "sweetalert2";
 import moment from "moment";
 
 const registerSchema = object({
-  last_name: string().nonempty("Le nom est obligatoire"),
-  first_name: string().nonempty("Le prénom est obligatoire"),
-  email: string().nonempty("L'email est obligatoire"),
-  password: string().nonempty("Le mot de passe est obligatoire"),
-  numPermis: string().nonempty("Le numero de permis est obligatoire"),
+    matricule: string().nonempty("Le matricule est obligatoire"),
+    couleur: string().nonempty("La couleur est obligatoire"),
 
 });
 
 type RegisterInput = TypeOf<typeof registerSchema>;
 
 const fields = [
-  { field: "last_name", headerName: "Nom", type: "string", add: true, edit: true, required: true },
-  { field: "first_name", headerName: "Prénom", type: "string", add: true, edit: true, required: true },
-  { field: "email", headerName: "Email", type: "string", add: true, edit: true, required: true },
-  { field: "password", headerName: "Mot de passe", type: "password", add: true, edit: true, required: true },
-  { field: "numPermis", headerName: "N° Permis", type: "number", add: true, edit: true, required: true },
-  { field: "date_begin", headerName: "Date du début", type: "date", add: true, edit: true },
-  {
-    field: "sexe",
-    headerName: "Genre",
-    type: "checkbox",
-  },
+    { field: "matricule", headerName: "N° matricule", type: "string", flex: 1, add: true,edit: true,required: true},
+    { field: "couleur", headerName: "Couleur", type: "string", flex: 1, add: true,edit: true,required: true},
   {
     field: "active",
     headerName: "Etat",
@@ -49,7 +37,7 @@ const fields = [
   },
 ];
 
-interface NewDriverProps {
+interface NewCamionrProps {
   open: boolean;
   handleClose: () => void;
   handleCloseUpdated: () => void;
@@ -58,14 +46,13 @@ interface NewDriverProps {
   setItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
+const NewCamion: React.FC<NewCamionrProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
   const [checked, setChecked] = useState(false);
-  const [checkedSexe, setCheckedSexe] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
 
   const addOne = async (values: RegisterInput) => {
-    let nom = values.last_name;
-    let newValues = { ...values, idRole: 1, active: !checked, sexe: checkedSexe };
+    let nom = "La voiture "+values.matricule;
+    let newValues = { ...values, active: !checked };
     console.log(newValues);
 
     await addOperation({...newValues})
@@ -111,7 +98,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
           Swal.fire({
             position: "center",
             icon: "success",
-            title: `${values.last_name} a bien été mis a jour`,
+            title: `La voiture ${values.matricule} a bien été mis a jour`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -120,7 +107,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
           Swal.fire({
             position: "center",
             icon: "error",
-            title: `${values.last_name} n'a pas mis a jour`,
+            title: `La voiture ${values.matricule} n'a pas mis a jour`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -130,7 +117,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
         Swal.fire({
           position: "center",
           icon: "error",
-          title: `${values.last_name} n'a pas mis a jour`,
+          title: `La voiture ${values.matricule} n'a pas mis a jour`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -194,10 +181,10 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-                fiche Chauffeur
+                fiche Camion
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-                Fiche chauffeur : créer un chauffeur .
+                Fiche Camion : créer un Camion .
               </Typography>
             </Box>
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
@@ -221,16 +208,6 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                   }}
                 />
               ))}
-            </Box>
-            <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <Typography>Genre</Typography>
-              <Switch
-                checked={checkedSexe}
-                onChange={(e) => setCheckedSexe(e.target.checked)}
-                inputProps={{ "aria-label": "controlled" }}
-                sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-              />
-              <Typography>{checkedSexe ? 'Homme' : 'Femme'}</Typography>
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <Typography>En sommeil</Typography>
@@ -262,10 +239,10 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-                fiche Chauffeur
+                fiche Camion
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-                Fiche chauffeur : mettre a jour un chauffeur .
+                Fiche camion : mettre a jour un camion .
               </Typography>
             </Box>
             <CloseIcon onClick={fieldsChanged ? handleCloseUpdated : handleClose} sx={{ cursor: "pointer" }} />
@@ -289,19 +266,6 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                   }}
                 />
               ))}
-            </Box>
-            <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <Typography>Genre</Typography>
-              <Switch
-                checked={item.sexe}
-                onChange={(e) => {
-                  setItem({ ...item, sexe: e.target.checked });
-                  setRefresh(!refresh);
-                }}
-                inputProps={{ "aria-label": "controlled" }}
-                sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
-              />
-              <Typography>{item.sexe ? 'Homme' : 'Femme'}</Typography>
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <Typography>En sommeil</Typography>
@@ -328,4 +292,4 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   );
 };
 
-export default NewDriver;
+export default NewCamion;

@@ -1,11 +1,8 @@
 import db from '../db.js';
 
 // Get all Camions
-const getAll = (callback) => {
-  const query = 'SELECT * FROM Camion';
-  db.query(query, (err, results) => {
-    callback(err, results);
-  });
+export const findAll = (query, callback) => {
+  db.query(query, callback);
 };
 
 // Get a single Camion by id
@@ -47,10 +44,10 @@ const deleteCamion = (id, callback) => {
   });
 };
 
-export { getAll, getById, create, update, deleteCamion };
+export { findAll, getById, create, update, deleteCamion };
 
 export default {
-  getAll,
+  findAll,
   getById,
   create,
   update,
