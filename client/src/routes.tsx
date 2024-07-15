@@ -5,8 +5,9 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import Layout from './layouts/Layout';
-import DriverPage from './pages/Driver';
+import DriverPage from './pages/DriverPage';
 import CamionPage from './pages/CamionPage';
+import RegionPage from './pages/RegionPage';
 
 const AppRoutes: React.FC = () => {
     const { user } = useAuth();
@@ -19,7 +20,9 @@ const AppRoutes: React.FC = () => {
                     <Route path="/dashboard" element={<DashboardPage />}/>
                     <Route path="/driver" element={<DriverPage />}/>
                     <Route path="/camion" element={<CamionPage />}/>
+                    <Route path="/region" element={<RegionPage />}/>
                     <Route path="/" element={<DashboardPage />}/>
+
                 </Route>
                 
                 <Route path="*" element={<Navigate to="/login" />} />

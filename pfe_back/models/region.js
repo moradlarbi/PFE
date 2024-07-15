@@ -1,7 +1,13 @@
 import db from '../db.js';
 
 const getAll = (callback) => {
-  const query = 'SELECT * FROM Region';
+  const query = `
+    SELECT 
+      r.id, r.nom, r.population,
+      c.longitude, c.latitude
+    FROM Region r
+    LEFT JOIN Coordonnees c ON r.id = c.idRegion
+  `;
   db.query(query, callback);
 };
 

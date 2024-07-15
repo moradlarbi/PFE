@@ -224,6 +224,7 @@ const CamionPage = () => {
       let open = Boolean(anchorEl);
     const [newModelName, setNewModelName] = useState('');
     const [expanded, setExpanded] = useState<boolean>(false);
+    const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const handleAddModel = async () => {
       let nom = newModelName;
       if (newModelName.trim() !== '') {
@@ -266,12 +267,12 @@ const CamionPage = () => {
     const processRowUpdate = async (nouveauRow, oldRow) => {
       var changed = { ...nouveauRow };
       delete changed.id;
+      console.log(changed)
       if (JSON.stringify(nouveauRow) === JSON.stringify(oldRow)) return;
       const rd = {
-          name: changed,
+        name: changed.name,
       };
-      console.log(rd)
-      const res = await editModel(rd,oldRow.id);
+      const res = await editModel(rd, oldRow.id);
       if (res.status === 200) {
         Swal.fire({
           title: "Succés",
@@ -284,16 +285,25 @@ const CamionPage = () => {
         return oldRow;
       }
     };
-    const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-
+  
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
       if (params.reason === GridRowEditStopReasons.rowFocusOut) {
         event.defaultMuiPrevented = true;
       }
     };
+  
+    const handleCellEditStop: GridEventListener<'cellEditStop'> = (params, event) => {
+      setRowModesModel((prevModel : any) => ({
+        ...prevModel,
+        [params.id]: { mode: 'view' },
+      }));
+    };
+  
+  
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
       setRowModesModel(newRowModesModel);
     };
+  
   return (
       <>
       {openDialog && <NewCamion handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
@@ -343,6 +353,7 @@ const CamionPage = () => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
+          onCellEditStop={handleCellEditStop}
           refreshParent={refresh}
           fetchurl={`/modeleCamion?populate=*&sort=id:ASC`}
           columns={columnsModels}
