@@ -12,6 +12,10 @@ const getById = (id, callback) => {
     callback(err, results);
   });
 };
+export const updateActiveStatus = (userId, active, callback) => {
+  const query = 'UPDATE camion SET active = ? WHERE id = ?';
+  db.query(query, [active, userId], callback);
+};
 
 // Create a new Camion
 const create = (matricule, couleur, idModele, callback) => {
@@ -25,13 +29,13 @@ const create = (matricule, couleur, idModele, callback) => {
 };
 
 // Update an existing Camion
-const update = (id, matricule, couleur, idModele, callback) => {
+const update = (id, matricule, couleur, idModele,active, callback) => {
   const query = `
     UPDATE Camion
-    SET matricule = ?, couleur = ?, idModele = ?
+    SET matricule = ?, couleur = ?, idModele = ?,active = ?
     WHERE id = ?
   `;
-  db.query(query, [matricule, couleur, idModele, id], (err) => {
+  db.query(query, [matricule, couleur, idModele,active, id], (err) => {
     callback(err);
   });
 };
@@ -44,7 +48,7 @@ const deleteCamion = (id, callback) => {
   });
 };
 
-export { findAll, getById, create, update, deleteCamion };
+export { getById, create, update, deleteCamion };
 
 export default {
   findAll,

@@ -6,6 +6,7 @@ import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import Layout from './layouts/Layout';
 import DriverPage from './pages/Driver';
+import CamionPage from './pages/CamionPage';
 
 const AppRoutes: React.FC = () => {
     const { user } = useAuth();
@@ -17,6 +18,7 @@ const AppRoutes: React.FC = () => {
                 <Route element={user ? <Layout /> : <LoginPage />}>
                     <Route path="/dashboard" element={<DashboardPage />}/>
                     <Route path="/driver" element={<DriverPage />}/>
+                    <Route path="/camion" element={<CamionPage />}/>
                     <Route path="/" element={<DashboardPage />}/>
                 </Route>
                 
