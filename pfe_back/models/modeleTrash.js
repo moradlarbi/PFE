@@ -1,27 +1,29 @@
-import db from '../db.js';
+import db from "../db.js";
 
 const getAll = (callback) => {
-  const query = 'SELECT * FROM ModeleTrash';
+  const query = "SELECT * FROM ModeleTrash";
   db.query(query, callback);
 };
 
 const getById = (id, callback) => {
-  const query = 'SELECT * FROM ModeleTrash WHERE id = ?';
+  const query = "SELECT * FROM ModeleTrash WHERE id = ?";
   db.query(query, [id], callback);
 };
 
 const create = (name, volume, couleur, callback) => {
-  const query = 'INSERT INTO ModeleTrash (name, volume, couleur) VALUES (?, ?, ?)';
+  const query =
+    "INSERT INTO ModeleTrash (name, volume, couleur) VALUES (?, ?, ?)";
   db.query(query, [name, volume, couleur], callback);
 };
 
 const update = (id, name, volume, couleur, callback) => {
-  const query = 'UPDATE ModeleTrash SET name = ?, volume = ?, couleur = ? WHERE id = ?';
+  const query =
+    "UPDATE ModeleTrash SET name = ?, volume = ?, couleur = ? WHERE id = ?";
   db.query(query, [name, volume, couleur, id], callback);
 };
 
 const deleteModeleTrash = (id, callback) => {
-  const query = 'DELETE FROM ModeleTrash WHERE id = ?';
+  const query = "DELETE FROM ModeleTrash WHERE id = ?";
   db.query(query, [id], callback);
 };
 
