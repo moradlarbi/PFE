@@ -15,7 +15,7 @@ const DriverPage = () => {
     const theme = useTheme()
     const [selectedRows, setSelectedRows] = useState<number[]>();
     const [selectedRow, setSelectedRow] = useState(null);
-    const options = [{active: false,label:"Bloqué"}, {active: true,label:"Actif"}];
+    const options = [{active: 0,label:"Bloqué"}, {active: 1,label:"Actif"}];
       const [item, setItem] = useState({})
     const Printaction = async () => {
     //   const pdfBlob = await pdf(<PrintModule rows={pdfinfo.rows} columns={columns} topbanner={{
@@ -95,7 +95,7 @@ const DriverPage = () => {
                           <MenuItem
                             key={option.label}
                             onClick={() => {
-                              handleChangeState(params.row, option.label);
+                              handleChangeState(params.row);
                               setAnchorEl(null);
                             }}
                           >
@@ -109,8 +109,9 @@ const DriverPage = () => {
             },
           },
       ];
-      const handleChangeState = async(values: any, option: string) => {
-        await editOperation({data: {...values, active: !values.active}}, values.id)
+      
+      const handleChangeState = async(values: any) => {
+        await editOperation({...values, active: !values.active}, values.id)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {

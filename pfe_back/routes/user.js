@@ -115,9 +115,6 @@ router.put('/active/:id', async (req, res) => {
   const id = req.params.id;
   const { active } = req.body;
   console.log(active,id)
-  // if (typeof id !== 'number' || typeof active !== 'boolean') {
-  //   return res.status(400).json({ error: 'Invalid input' });
-  // }
 
   try {
     await new Promise((resolve, reject) => {

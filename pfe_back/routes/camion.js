@@ -5,13 +5,17 @@ import {
   create,
   update,
   deleteCamion,
+  updateActiveStatus
 } from '../models/camion.js';
 
 const router = express.Router();
 
 // Get all Camions
 const constructQuery = (query) => {
-  let baseQuery = 'SELECT * FROM camion';
+  let baseQuery = `
+  SELECT camion.*, ModeleCamion.name as modeleName 
+  FROM camion 
+  JOIN ModeleCamion ON camion.idModele = ModeleCamion.id`;
   const whereClauses = [];
   const orderClauses = [];
   let limitClause = '';
@@ -102,12 +106,28 @@ router.post('/', (req, res) => {
     }
   });
 });
+router.put('/active/:id', async (req, res) => {
+  const id = req.params.id;
+  const { active } = req.body;
+  console.log(active,id)
 
+  try {
+    await new Promise((resolve, reject) => {
+      updateActiveStatus(id, active, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+    res.status(200).json({ message: 'Camion active status updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Update an existing Camion
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  const { matricule, couleur, idModele } = req.body;
-  update(id, matricule, couleur, idModele, (err) => {
+  const { matricule, couleur, idModele,active } = req.body;
+  update(id, matricule, couleur, idModele,active, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {
