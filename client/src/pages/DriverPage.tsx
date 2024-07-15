@@ -34,6 +34,7 @@ const DriverPage = () => {
         { field: "date_begin", headerName: "Date début", type: "string", flex: 1,valueGetter: (params: any) =>  {
           return moment(params).format('DD/MM/YYYY');;
         }, add: true,edit: true,},
+        { field: "matricule", headerName: "N° camion", type: "string", flex: 1, add: true,edit: true},
         {
             field: "active",
             headerName: "Etat",
