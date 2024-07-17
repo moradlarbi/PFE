@@ -10,10 +10,9 @@ import CustomDataGrid from '../components/CustomDataGrid';
 import { Columns } from '../types';
 import {  useTheme } from "@mui/material/styles";
 import { GridCellParams } from '@mui/x-data-grid';
-import { editOperation, editStatus } from '../api/driver';
 import Swal from 'sweetalert2';
 import { Border } from '../components/Border';
-import { addOperation } from '../api/region';
+import { addOperation, editStatus } from '../api/region';
 import RegionMap from '../components/RegionMap';
 const RegionPage = () => {
     const [refresh, setrefresh] = useState(false);
@@ -26,12 +25,123 @@ const RegionPage = () => {
     }
     const columns: Columns[] = [
         { field: "id", headerName: "Réf", type: "string", width: 100 },
-        { field: "name", headerName: "Nom", type: "string", flex: 1, add: true,edit: true,},
+        { field: "nom", headerName: "Nom", type: "string", flex: 1, add: true,edit: true,},
         { field: "population", headerName: "Population", type: "number", flex: 1, add: true,edit: true,},
+        {
+          field: "active",
+          headerName: "Etat",
+          type: "string",
+          editable: false,
+          width: 100,
+          renderCell: (params) => {
+            return (
+              <Box
+                sx={{
+                  background:
+                    params.row.active == 1 ? theme?.palette.primary.main :theme?.palette.error.main,
+                  color: "#fff",
+                  borderRadius: "32px",
+                  display: "flex",
+                  justifyContent:"center",
+                  alignItems: "center",
+                }}
+              >
+                {params.row.active == 1 ? "Actif":"Bloqué"}
+              </Box>
+            );
+          },
+        },
+        {
+          type: "actions",
+          editable: false,
+          renderCell: (params: GridCellParams) => {
+            return (
+              <>
+                <IconButton
+                  aria-label="more"
+                  id="long-button"
+                  aria-controls={open ? "long-menu" : undefined}
+                  aria-expanded={open ? "true" : undefined}
+                  aria-haspopup="true"
+                  onClick={(event) => {
+                    setSelectedRow(params.row.id);
+                    
+                    setAnchorEl(event.currentTarget);
+                  }}
+                >
+                  <MoreVert />
+                </IconButton>
+                {open && selectedRow === params.row.id && (
+                  <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={() => {
+                      setAnchorEl(null);
+                    }}
+                  >
+                    {options
+                      .filter(
+                        (o) => o.active !== params.row.active
+                      )
+                      .map((option) => (
+                        <MenuItem
+                          key={option.label}
+                          onClick={() => {
+                            handleChangeState(params.row);
+                            setAnchorEl(null);
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  </Menu>
+                )}
+              </>
+            );
+          },
+        }
       ];
-      
-      const [openDialog, setOpenDialog] = useState(false)
+      const handleChangeState = async(values: any) => {
+        await editStatus({active:!values.active}, values.id)
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: `${values.nom} a bien été mis a jour`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setrefresh(!refresh)
+          }
+          else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: `${values.nom} n'a pas mis a jour`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        })
+        .catch((e) => {
+            console.log(e)
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: `${values.nom} n'a pas été mis a jour`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          
+          
+        })
+      }
       const [expanded, setExpanded] = useState<boolean>(false);
+      const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+      let open = Boolean(anchorEl);
 
 
   return (
@@ -69,7 +179,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "success",
-                          title: `${res.data.last_name ?? "chauffeur"} a bien été désactivé`,
+                          title: `${res.data.nom ?? "region"} a bien été désactivé`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -79,7 +189,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `${res.data.last_name ?? "chauffeur"} n'a pas été désactivé`,
+                          title: `${res.data.nom ?? "region"} n'a pas été désactivé`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -90,7 +200,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `chauffeur n'a pas été désactivé`,
+                          title: `region n'a pas été désactivé`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -114,8 +224,6 @@ const RegionPage = () => {
           }}
           onCellDoubleClick={(params: GridCellParams) => {
             console.log(params.row)
-            setItem(params.row)
-            setOpenDialog(true)
           }}
           checkboxSelection
           refreshParent={refresh}

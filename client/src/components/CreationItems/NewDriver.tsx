@@ -194,6 +194,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
     } else {
       setItem({ ...item, [event.target.name]: event.target.value });
     }
+    console.log(event.target)
     setFieldsChanged(true);
     setRefresh(!refresh);
   };
@@ -203,7 +204,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   useEffect(() => {}, [item]);
 
   return (
-    <Dialog open={open} onClose={fieldsChanged ? handleCloseUpdated : handleClose} maxWidth={false}>
+    <Dialog open={open} onClose={fieldsChanged ? handleCloseUpdated : handleClose} maxWidth={false} sx={{zIndex:"130"}}>
       {Object.keys(item).length === 0 ? (
         <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit(onSubmitHandler)}>
           <DialogTitle
@@ -332,7 +333,21 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                       ))}
                     </Select>
                   </FormControl>
-                ) : (
+                ) : (col.type === "date" ? (
+                  <TextField
+                    key={col.field}
+                    fullWidth
+                    label={col.headerName}
+                    type={col.type}
+                    name={col.field}
+                    value={item[col.field].split("T")[0]}
+                    onChange={handleChangeUpdate}
+                    required={col.required}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="start"></InputAdornment>,
+                    }}
+                  />
+                ): (
                   <TextField
                     key={col.field}
                     fullWidth
@@ -346,7 +361,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                       endAdornment: <InputAdornment position="start"></InputAdornment>,
                     }}
                   />
-                )
+                ))
               ))}
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>

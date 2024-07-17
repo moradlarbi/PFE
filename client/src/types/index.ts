@@ -11,7 +11,7 @@ export type Columns = {
       | 'number'
       | 'password'
       | 'actions'
-      | 'singleSelect'
+      | 'singleSelect' | 'color'
     add?: boolean
     edit?: boolean
     hide?: boolean
