@@ -14,6 +14,7 @@ import coordonneesRoutes from "./coordonnees.js";
 import paramsRoutes from "./params.js";
 import authRoutes from "./auth.js";
 import authRoleRoutes from "./authRole.js";
+import trashRegionRoute from "./trashRegion.js";
 
 router.use("/modeleCamion", modeleCamionRoutes);
 router.use("/camion", camionRoutes);
@@ -26,5 +27,6 @@ router.use("/user", userRoutes);
 router.use("/params", paramsRoutes);
 router.use("/auth", authRoutes);
 router.use("/authRole", authRoleRoutes);
+router.use("/trashRegion", trashRegionRoute);
 
 export default router;

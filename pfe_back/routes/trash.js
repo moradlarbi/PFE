@@ -1,7 +1,6 @@
 import express from "express";
 import {
   getAll,
-  getByRegion,
   getById,
   create,
   update,
@@ -68,24 +67,6 @@ router.get("/", async (req, res) => {
     const query = constructQuery(req.query);
     const results = await new Promise((resolve, reject) => {
       getAll(query, (err, results) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
-    });
-    res.status(200).json(results);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-router.get("/TrashRegion", async (req, res) => {
-  try {
-    const query = constructQuery(req.query);
-    const results = await new Promise((resolve, reject) => {
-      getByRegion(query, (err, results) => {
         if (err) {
           console.log(err);
           reject(err);

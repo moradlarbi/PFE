@@ -8,18 +8,6 @@ const getById = (id, callback) => {
   const query = "SELECT * FROM Trash WHERE id = ?";
   db.query(query, [id], callback);
 };
-// Get trash by region
-const getByRegion = (callback) => {
-  const query = `
-    SELECT 
-      trash.id, trash.matricule, trash.couleur, trash.idModele, 
-      trash.idRegion, trash.longitude, trash.latitude, trash.quantity, 
-      trash.utilisable, region.nom as region_name
-    FROM trash
-    JOIN region ON trash.idRegion = region.id
-  `;
-  db.query(query, callback);
-};
 
 const create = (
   matricule,
@@ -91,11 +79,10 @@ const deleteTrash = (id, callback) => {
   db.query(query, [id], callback);
 };
 
-export { getAll, getByRegion, getById, create, update, deleteTrash };
+export { getAll, getById, create, update, deleteTrash };
 
 export default {
   getAll,
-  getByRegion,
   getById,
   create,
   update,
