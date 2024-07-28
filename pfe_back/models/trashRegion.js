@@ -6,8 +6,8 @@ const getTrashWithRegionName = (callback) => {
       t.id, 
       t.idModele, 
       r.nom AS region_nom, 
-      DISTINCT t.longitude, 
-      DISTINCT t.latitude, 
+      t.longitude, 
+      t.latitude, 
       t.quantity, 
       t.utilisable
     FROM 
