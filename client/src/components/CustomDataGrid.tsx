@@ -125,8 +125,6 @@ export default function CustomDataGrid({
 
   const getData = () => {
     setLoading(true);
-
-    
     axios
       .get(
         `${fetchurl}&pagination[page]=${

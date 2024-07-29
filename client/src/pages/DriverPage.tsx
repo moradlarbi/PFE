@@ -32,8 +32,9 @@ const DriverPage = () => {
           return `${params? "Homme":"Femme"}`
         }, add: true,edit: true,},
         { field: "date_begin", headerName: "Date début", type: "string", flex: 1,valueGetter: (params: any) =>  {
-          return moment(params).format('DD/MM/YYYY');;
+          return moment(params).format('DD/MM/YYYY');
         }, add: true,edit: true,},
+        { field: "matricule", headerName: "N° camion", type: "string", flex: 1, add: true,edit: true},
         {
             field: "active",
             headerName: "Etat",
@@ -163,6 +164,9 @@ const DriverPage = () => {
               confirmButtonColor: "#3085d6",
               cancelButtonColor: "#d33",
               confirmButtonText: "Yes, discard changes!",
+              customClass: {
+                popup: 'swal-popup',
+              }
             }).then((result : any) => {
               if (result.isConfirmed) {
                 setOpenDialog(false);

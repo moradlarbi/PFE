@@ -15,3 +15,7 @@ export const deleteOperation = (id: number) => {
     { data: { active: false } }
   );
 };
+export const fetchCamions = async () => {
+  const response = await axios.get('/camion');
+  return response.data;
+};

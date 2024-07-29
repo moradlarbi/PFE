@@ -9,38 +9,32 @@ import {
   TextField,
   InputAdornment,
   Typography,
-  Switch,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel
+  Switch
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { object, string, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addOperation, editOperation } from "../../api/camion";
+import { addOperation, editOperation } from "../../api/modelePoubelle";
 import Swal from "sweetalert2";
-import { fetchModeleCamions } from "../../api/modeleCamion";
 
 const registerSchema = object({
-  matricule: string().nonempty("Le matricule est obligatoire"),
+  name: string().nonempty("Le nom est obligatoire"),
+  volume: string().nonempty("Le volume est obligatoire"),
   couleur: string().nonempty("La couleur est obligatoire"),
 });
 
 type RegisterInput = TypeOf<typeof registerSchema>;
 
 const fields = [
-  { field: "matricule", headerName: "N° matricule", type: "string", flex: 1, add: true, edit: true, required: true },
-  { field: "couleur", headerName: "Couleur", type: "color", flex: 1, add: true, edit: true, required: true },
-  { field: "idModele", headerName: "Modèle", type: "select", flex: 1, add: true, edit: true, required: true },
-  { field: "active", headerName: "Etat", type: "checkbox" },
+  { field: "id", headerName: "Réf", type: "string", width: 100 },
+  { field: "name", headerName: "Nom", type: "string", flex: 1, add: true,edit: true,required: true},
+  { field: "volume", headerName: "Volume", type: "number", flex: 1, add: true,edit: true,required: true},
+  { field: "couleur", headerName: "Couleur", type: "color", flex: 1, add: true,edit: true,required: true},
+  { field: "total", headerName: "Total", type: "number", flex: 1, add: false,edit: false,},
 ];
 
-interface ModeleCamion {
-  id: string;
-  name: string;
-}
+
 
 interface NewCamionProps {
   open: boolean;
@@ -51,27 +45,16 @@ interface NewCamionProps {
   setItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
+const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
   const [checked, setChecked] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
-  const [modeleCamions, setModeleCamions] = useState<ModeleCamion[]>([]);
   const [idModele, setIdModele] = useState<string>("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchModeleCamions();
-        setModeleCamions(data);
-      } catch (error) {
-        console.error("Failed to fetch ModeleCamions", error);
-      }
-    };
-    fetchData();
-  }, []);
+  
 
   const addOne = async (values: RegisterInput) => {
-    let nom = "La voiture " + values.matricule;
-    let newValues = { ...values, idModele, active: !checked };
+    let nom = "Le modèle " + values.name;
+    let newValues = { ...values, active: !checked };
     console.log(newValues);
 
     await addOperation({ ...newValues })
@@ -119,7 +102,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           Swal.fire({
             position: "center",
             icon: "success",
-            title: `La voiture ${values.matricule} a bien été mise à jour`,
+            title: `Le modèle ${values.name} a bien été mise à jour`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -128,7 +111,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           Swal.fire({
             position: "center",
             icon: "error",
-            title: `La voiture ${values.matricule} n'a pas été mise à jour`,
+            title: `Le modèle ${values.name} n'a pas été mise à jour`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -138,7 +121,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
         Swal.fire({
           position: "center",
           icon: "error",
-          title: `La voiture ${values.matricule} n'a pas été mise à jour`,
+          title: `Le modèle ${values.name} n'a pas été mise à jour`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -205,10 +188,10 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-                fiche Camion
+                fiche Modèle poubelle
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-                Fiche Camion : créer un Camion .
+                Fiche Modèle poubelle : créer un modèle .
               </Typography>
             </Box>
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
@@ -216,23 +199,6 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           <DialogContent>
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 10px", marginTop: "10px", minWidth: 500 }}>
               {fields.filter((c) => c.add).map((col) => (
-                col.type === "select" ? (
-                  <FormControl key={col.field} fullWidth>
-                    <InputLabel>{col.headerName}</InputLabel>
-                    <Select
-                      label={col.headerName}
-                      value={idModele}
-                      onChange={handleSelectChange} // Separate change handler for select
-                      error={!!(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]}
-                    >
-                      {modeleCamions.map((modele) => (
-                        <MenuItem key={modele.id} value={modele.id}>
-                          {modele.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
                   <TextField
                     key={col.field}
                     fullWidth
@@ -247,7 +213,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
                     }}
                   />
                 )
-              ))}
+              )}
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <Typography>En sommeil</Typography>
@@ -277,10 +243,10 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-                fiche Camion
+              fiche Modèle poubelle
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-                Fiche Camion : modifier un Camion .
+              Fiche Modèle poubelle : modifier un modèle .
               </Typography>
             </Box>
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
@@ -288,23 +254,6 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
           <DialogContent>
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 10px", marginTop: "10px", minWidth: 500 }}>
               {fields.filter((c) => c.edit).map((col) => (
-                col.type === "select" ? (
-                  <FormControl key={col.field} fullWidth required={col.required}>
-                    <InputLabel>{col.headerName}</InputLabel>
-                    <Select
-                      label={col.headerName}
-                      name={col.field}
-                      value={item[col.field] || ""}
-                      onChange={handleChangeUpdate}
-                    >
-                      {modeleCamions.map((modele) => (
-                        <MenuItem key={modele.id} value={modele.id}>
-                          {modele.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
                   <TextField
                     key={col.field}
                     fullWidth
@@ -319,7 +268,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
                     }}
                   />
                 )
-              ))}
+              )}
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <Typography>En sommeil</Typography>
@@ -341,4 +290,4 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
   );
 };
 
-export default NewCamion;
+export default NewModeleTrash;

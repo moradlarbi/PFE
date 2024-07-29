@@ -18,6 +18,7 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { SouthAmerica, DeleteForever } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -66,13 +67,25 @@ const Layout: React.FC = () => {
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
-              <ListItemText primary="Drivers" />
+              <ListItemText primary="Conducteurs" />
             </ListItem>
             <ListItem button component={Link} to="/camion">
               <ListItemIcon>
                 <LocalShippingIcon />
               </ListItemIcon>
               <ListItemText primary="Camions" />
+            </ListItem>
+            <ListItem button component={Link} to="/region">
+              <ListItemIcon>
+                <SouthAmerica />
+              </ListItemIcon>
+              <ListItemText primary="Régions" />
+            </ListItem>
+            <ListItem button component={Link} to="/trash">
+              <ListItemIcon>
+                <DeleteForever />
+              </ListItemIcon>
+              <ListItemText primary="Poubelles" />
             </ListItem>
           </List>
         </div>

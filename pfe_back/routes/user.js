@@ -12,7 +12,7 @@ const router = express.Router();
 
 // Get all users
 const constructQuery = (query) => {
-  let baseQuery = 'SELECT * FROM users';
+  let baseQuery = 'SELECT users.*, Camion.matricule as matricule FROM users JOIN Camion ON users.idCamion=Camion.id';
   const whereClauses = [];
   const orderClauses = [];
   let limitClause = '';
@@ -22,7 +22,7 @@ const constructQuery = (query) => {
   if (query.filters) {
     for (const [key, value] of Object.entries(query.filters)) {
       if (typeof value === 'object' && '$eq' in value) {
-        whereClauses.push(`${key} = ${value['$eq']}`);
+        whereClauses.push(`${key} = '${value['$eq']}'`);
       }
     }
   }
@@ -60,12 +60,22 @@ const constructQuery = (query) => {
     baseQuery += ` ${offsetClause}`;
   }
 
+  console.log('Constructed Query:', baseQuery); // Log the query for debugging
   return baseQuery;
 };
 
+
 router.get('/', async (req, res) => {
   try {
-    const query = constructQuery(req.query);
+    const prepquery = {
+      filters: req.query.filters,
+      sort: req.query.sort,
+      pagination: {
+        page: req.query['pagination[page]'],
+        pageSize: req.query['pagination[pageSize]']
+      }
+    };
+    const query = constructQuery(prepquery);
     const results = await new Promise((resolve, reject) => {
       findAll(query, (err, results) => {
         if (err) {

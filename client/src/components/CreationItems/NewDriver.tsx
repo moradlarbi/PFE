@@ -9,7 +9,11 @@ import {
   TextField,
   InputAdornment,
   Typography,
-  Switch
+  Switch,
+  InputLabel,
+  Select,
+  FormControl,
+  MenuItem
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
@@ -18,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addOperation, editOperation } from "../../api/driver";
 import Swal from "sweetalert2";
 import moment from "moment";
+import { fetchCamions } from "../../api/camion";
 
 const registerSchema = object({
   last_name: string().nonempty("Le nom est obligatoire"),
@@ -37,6 +42,7 @@ const fields = [
   { field: "password", headerName: "Mot de passe", type: "password", add: true, edit: true, required: true },
   { field: "numPermis", headerName: "N° Permis", type: "number", add: true, edit: true, required: true },
   { field: "date_begin", headerName: "Date du début", type: "date", add: true, edit: true },
+  { field: "idCamion", headerName: "Camion", type: "select", flex: 1, add: true, edit: true, required: true },
   {
     field: "sexe",
     headerName: "Genre",
@@ -48,7 +54,10 @@ const fields = [
     type: "checkbox",
   },
 ];
-
+interface Camion {
+  id: string;
+  matricule: string;
+}
 interface NewDriverProps {
   open: boolean;
   handleClose: () => void;
@@ -62,10 +71,22 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   const [checked, setChecked] = useState(false);
   const [checkedSexe, setCheckedSexe] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
-
+  const [camions, setCamions] = useState<Camion[]>([]);
+  const [idCamion, setIdCamion] = useState<string>("")
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchCamions();
+        setCamions(data);
+      } catch (error) {
+        console.error("Failed to fetch Camions", error);
+      }
+    };
+    fetchData();
+  }, []);
   const addOne = async (values: RegisterInput) => {
     let nom = values.last_name;
-    let newValues = { ...values, idRole: 1, active: !checked, sexe: checkedSexe };
+    let newValues = { ...values,idCamion, idRole: 1, active: !checked, sexe: checkedSexe };
     console.log(newValues);
 
     await addOperation({...newValues})
@@ -173,14 +194,17 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
     } else {
       setItem({ ...item, [event.target.name]: event.target.value });
     }
+    console.log(event.target)
     setFieldsChanged(true);
     setRefresh(!refresh);
   };
-
+  const handleSelectChange = (event: React.ChangeEvent<any>) => {
+    setIdCamion(event.target.value as string);
+  };
   useEffect(() => {}, [item]);
 
   return (
-    <Dialog open={open} onClose={fieldsChanged ? handleCloseUpdated : handleClose} maxWidth={false}>
+    <Dialog open={open} onClose={fieldsChanged ? handleCloseUpdated : handleClose} maxWidth={false} sx={{zIndex:"130"}}>
       {Object.keys(item).length === 0 ? (
         <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit(onSubmitHandler)}>
           <DialogTitle
@@ -207,19 +231,37 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
               sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 10px", marginTop: "10px", minWidth: 500 }}
             >
               {fields.filter((c) => c.add).map((col) => (
-                <TextField
-                  key={col.field}
-                  fullWidth
-                  label={col.headerName}
-                  type={col.type}
-                  {...register(col.field as keyof RegisterInput)}
-                  required={col.required}
-                  error={!!(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]}
-                  helperText={(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]?.message}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="start"></InputAdornment>,
-                  }}
-                />
+                col.type === "select" ? (
+                  <FormControl key={col.field} fullWidth>
+                    <InputLabel>{col.headerName}</InputLabel>
+                    <Select
+                      label={col.headerName}
+                      value={idCamion}
+                      onChange={handleSelectChange}
+                      error={!!(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]}
+                    >
+                      {camions.map((camion) => (
+                        <MenuItem key={camion.id} value={camion.id}>
+                          {camion.matricule}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <TextField
+                    key={col.field}
+                    fullWidth
+                    label={col.headerName}
+                    type={col.type}
+                    {...register(col.field as keyof RegisterInput)}
+                    required={col.required}
+                    error={!!(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]}
+                    helperText={(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]?.message}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="start"></InputAdornment>,
+                    }}
+                  />
+                )
               ))}
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -274,20 +316,52 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
             <Box
               sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 10px", marginTop: "10px", minWidth: 500 }}
             >
-              {fields.filter((c) => c.edit && c.type !=="password").map((col) => (
-                <TextField
-                  key={col.field}
-                  fullWidth
-                  label={col.headerName}
-                  type={col.type}
-                  value={col.type =="date" ? moment(item[col.field]).format('YYYY-MM-DD'): item[col.field]}
-                  name={col.field}
-                  onChange={handleChangeUpdate}
-                  required={col.required}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="start"></InputAdornment>,
-                  }}
-                />
+              {fields.filter((c) => c.edit).map((col) => (
+                col.type === "select" ? (
+                  <FormControl key={col.field} fullWidth required={col.required}>
+                    <InputLabel>{col.headerName}</InputLabel>
+                    <Select
+                      label={col.headerName}
+                      name={col.field}
+                      value={item[col.field] || ""}
+                      onChange={handleChangeUpdate}
+                    >
+                      {camions.map((camion) => (
+                        <MenuItem key={camion.id} value={camion.id}>
+                          {camion.matricule}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (col.type === "date" ? (
+                  <TextField
+                    key={col.field}
+                    fullWidth
+                    label={col.headerName}
+                    type={col.type}
+                    name={col.field}
+                    value={item[col.field].split("T")[0]}
+                    onChange={handleChangeUpdate}
+                    required={col.required}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="start"></InputAdornment>,
+                    }}
+                  />
+                ): (
+                  <TextField
+                    key={col.field}
+                    fullWidth
+                    label={col.headerName}
+                    type={col.type}
+                    name={col.field}
+                    value={item[col.field]}
+                    onChange={handleChangeUpdate}
+                    required={col.required}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="start"></InputAdornment>,
+                    }}
+                  />
+                ))
               ))}
             </Box>
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>

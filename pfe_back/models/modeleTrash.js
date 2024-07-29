@@ -1,6 +1,7 @@
 import db from "../db.js";
 
-const getAll = (callback) => {
+
+const getAll = (query, callback) => {
   const query = "SELECT * FROM ModeleTrash";
   db.query(query, callback);
 };
