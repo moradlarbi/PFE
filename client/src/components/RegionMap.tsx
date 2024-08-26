@@ -96,25 +96,25 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
   };
 
   const handlePolygonCreated = (e: any) => {
-    const { layer } = e;
-    const latlngs = layer.getLatLngs()[0];
-    setCurrentPolygon(latlngs.map((latlng: any) => [latlng.lat, latlng.lng]));
+    // const { layer } = e;
+    // const latlngs = layer.getLatLngs()[0];
+    // setCurrentPolygon(latlngs.map((latlng: any) => [latlng?.lat, latlng?.lng]));
   };
 
   const DepotMarker = () => {
     useMapEvents({
       click(e) {
-        setDepot({ latitude: e.latlng.lat, longitude: e.latlng.lng });
+        setDepot({ latitude: e.latlng?.lat, longitude: e.latlng?.lng });
       },
-    });
+    }); 
     return depot ? (
-      /* @ts-ignore */
+      /* @ts-ignore */   
       <Marker position={[depot.latitude, depot.longitude]} icon={customIcon} />
-    ) : null;
+    ) : null; 
   };
-
-  useEffect(() => {
-    const getData = async () => {
+  
+  useEffect(() => {   
+    const getData = async () => {    
       try {
         const data = await fetchRegions();
         console.log(data);
@@ -134,7 +134,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
 
     getData();
   }, []);
-
+  
   return (
     <Box>
       <Box display="flex" gap={2} mb={2}>
@@ -171,26 +171,26 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
               polyline: false,
               marker: false,
               polygon: true,
-            }}
+            }} 
             edit={{
               edit: true,
-              remove: true,
-            }}
+              remove: true, 
+            }}  
           />
-        </FeatureGroup>
-        <DepotMarker />
-        {regions.map((region, idx) => (
+        </FeatureGroup>     
+        <DepotMarker /> 
+        {regions?.map((region, idx) => (
           <>
           <Polygon key={idx} positions={region.coordinates.map(coord => [coord.longitude, coord.latitude])} />
           {
             /* @ts-ignore */
             region.depotLatitude && region.depotLongitude && <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} />
-          }
+          }        
           </>
-        ))}
+        ))} 
       </MapContainer>
     </Box>
   );
-};
+};  
 
 export default RegionMap;

@@ -22,3 +22,6 @@ export const addTrash = (newData : any) => {
     const response = await axios.get('/trash');
     return response.data;
   };
+  export const deleteTrash = (id: number) => {
+    return axios.delete(`/trash/${id}`);
+  }

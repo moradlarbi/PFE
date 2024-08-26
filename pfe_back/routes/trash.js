@@ -94,6 +94,7 @@ router.get('/:id', (req, res) => {
 
 // Create a new Trash
 router.post('/', (req, res) => {
+  console.log(req.body)
   const { matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
   create(matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable, (err, results) => {
     if (err) {

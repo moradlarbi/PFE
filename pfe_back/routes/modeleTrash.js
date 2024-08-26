@@ -114,7 +114,7 @@ router.post('/cans', (req, res) => {
   }
 
   const query = 'INSERT INTO Trash (idModele, idRegion, longitude, latitude, quantity, utilisable) VALUES ?';
-  const values = trashData.map(trash => [trash.model, null, trash.lng, trash.lat, 0, 1]);
+  const values = trashData.map(trash => [trash.model, trash.idRegion || null, trash.lng, trash.lat, 0, 1]);
 
   db.query(query, [values], (err, result) => {
     if (err) {

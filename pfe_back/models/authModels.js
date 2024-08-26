@@ -4,6 +4,7 @@ import db from '../db.js';
 export const getPassword = (email) => {
   return new Promise((resolve, reject) => {
     const query = 'SELECT * FROM users WHERE email = ?';
+    console.log(query)
     db.query(query, [email], (err, results) => {
       if (err) {
         console.error('Error getting password:', err);

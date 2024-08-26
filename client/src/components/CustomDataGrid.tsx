@@ -135,7 +135,7 @@ export default function CustomDataGrid({
       )
       .then((res: AxiosResponse<any, any>) => {
         if (res.status == 200) {
-          console.log(res.data)
+          //console.log(res.data)
           dispatch({
             type: "ROWS",
             payload: {

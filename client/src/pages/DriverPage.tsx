@@ -158,7 +158,7 @@ const DriverPage = () => {
       {openDialog && <NewDriver handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
             Swal.fire({
               icon: "warning",
-              title: "Are you sure?",
+              title: "Êtes-vous sûr ?",
               text: "Your changes will not be saved!",
               showCancelButton: true,
               confirmButtonColor: "#3085d6",
