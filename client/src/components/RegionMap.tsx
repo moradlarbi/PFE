@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Polygon, useMap, FeatureGroup, Marker, useMapEvents } from 'react-leaflet';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import { EditControl } from 'react-leaflet-draw';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -8,18 +8,14 @@ import { AxiosResponse } from 'axios';
 import Swal from 'sweetalert2';
 import L, { LatLngExpression } from 'leaflet';
 import { fetchRegions } from '../api/region';
-// Import Leaflet default marker icons
-import 'leaflet/dist/images/marker-icon.png';
-import 'leaflet/dist/images/marker-shadow.png';
 
-// Define the custom icon
-const customIcon : any = L.icon({
+const customIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41], // size of the icon
-  iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
-  popupAnchor: [1, -34], // point from which the popup should open relative to the iconAnchor
-  shadowSize: [41, 41]  // size of the shadow
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 interface Region {
@@ -29,6 +25,7 @@ interface Region {
   depotLatitude?: number;
   depotLongitude?: number;
 }
+
 interface RegionProps {
   add: (newData: any) => Promise<AxiosResponse<any, any>>;
   handleRefresh: () => void;
@@ -36,12 +33,12 @@ interface RegionProps {
 
 const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
   const [regions, setRegions] = useState<Region[]>([]);
-
   const [regionName, setRegionName] = useState('');
   const position = [36.7372, 3.0822];
   const [population, setPopulation] = useState<number>(0);
   const [currentPolygon, setCurrentPolygon] = useState<LatLngExpression[]>([]);
   const [depot, setDepot] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [isDrawing, setIsDrawing] = useState(true);
 
   const handleSaveRegion = async () => {
     if (currentPolygon.length === 0 || !regionName || population <= 0 || !depot) {
@@ -55,39 +52,31 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
       depotLatitude: depot.latitude,
       depotLongitude: depot.longitude,
     };
-    console.log(newRegion);
-    await add(newRegion)
-      .then((res) => {
-        console.log(res);
-        if (res.status === 201) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: `${regionName} a bien été ajouté`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          handleRefresh();
-        } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: `${regionName} n'a pas été ajouté`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        }
-      })
-      .catch((e) => {
-        console.log(e);
+    
+    try {
+      const res = await add(newRegion);
+      if (res.status === 201) {
         Swal.fire({
           position: "center",
-          icon: "error",
-          title: `${regionName} n'a pas été ajouté`,
+          icon: "success",
+          title: `${regionName} added successfully`,
           showConfirmButton: false,
           timer: 1500,
         });
+        handleRefresh();
+      } else {
+        throw new Error("Failed to add region");
+      }
+    } catch (error) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: `Error adding ${regionName}`,
+        showConfirmButton: false,
+        timer: 1500,
       });
+    }
+
     setCurrentPolygon([]);
     setRegionName('');
     setPopulation(0);
@@ -96,29 +85,32 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
   };
 
   const handlePolygonCreated = (e: any) => {
-    // const { layer } = e;
-    // const latlngs = layer.getLatLngs()[0];
-    // setCurrentPolygon(latlngs.map((latlng: any) => [latlng?.lat, latlng?.lng]));
+    const { layer } = e;
+    const latlngs = layer.getLatLngs()[0];
+    setCurrentPolygon(latlngs.map((latlng: any) => [latlng?.lat, latlng?.lng]));
+    setIsDrawing(false); // Stop drawing mode
   };
 
   const DepotMarker = () => {
     useMapEvents({
       click(e) {
-        setDepot({ latitude: e.latlng?.lat, longitude: e.latlng?.lng });
+        if (!isDrawing) {
+          setDepot({ latitude: e.latlng?.lat, longitude: e.latlng?.lng });
+        }
       },
-    }); 
+    });
+    
     return depot ? (
-      /* @ts-ignore */   
+      /* @ts-ignore */
       <Marker position={[depot.latitude, depot.longitude]} icon={customIcon} />
-    ) : null; 
+    ) : null;
   };
-  
-  useEffect(() => {   
-    const getData = async () => {    
+
+  useEffect(() => {
+    const getData = async () => {
       try {
         const data = await fetchRegions();
-        console.log(data);
-        setRegions(data.filter((c) => c.active == 1).map((region: any) => ({
+        setRegions(data.filter((c) => c.active === 1).map((region: any) => ({
           id: region.id,
           name: region.name,
           population: region.population,
@@ -134,7 +126,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
 
     getData();
   }, []);
-  
+
   return (
     <Box>
       <Box display="flex" gap={2} mb={2}>
@@ -154,16 +146,20 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
         </Button>
       </Box>
       <MapContainer
-         /* @ts-ignore */
+      /*@ts-ignore */
         center={position as LatLngExpression}
         zoom={13}
         style={{ height: '500px', width: '100%' }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        
         <FeatureGroup>
           <EditControl
             position="topright"
-            onCreated={handlePolygonCreated}
+            onCreated={(e) => {
+              setIsDrawing(true); 
+              handlePolygonCreated(e);
+            }}
             draw={{
               rectangle: false,
               circle: false,
@@ -171,26 +167,28 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
               polyline: false,
               marker: false,
               polygon: true,
-            }} 
+            }}
             edit={{
               edit: true,
-              remove: true, 
-            }}  
+              remove: true,
+            }}
           />
-        </FeatureGroup>     
-        <DepotMarker /> 
+        </FeatureGroup>
+
+        <DepotMarker />
+
         {regions?.map((region, idx) => (
-          <>
-          <Polygon key={idx} positions={region.coordinates.map(coord => [coord.longitude, coord.latitude])} />
-          {
-            /* @ts-ignore */
-            region.depotLatitude && region.depotLongitude && <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} />
-          }        
-          </>
-        ))} 
+          <React.Fragment key={idx}>
+            <Polygon positions={region.coordinates.map(coord => [coord.longitude,coord.latitude])} />
+            {
+              /* @ts-ignore */
+              region.depotLatitude && region.depotLongitude && <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} />
+            }
+          </React.Fragment>
+        ))}
       </MapContainer>
     </Box>
   );
-};  
+};
 
 export default RegionMap;

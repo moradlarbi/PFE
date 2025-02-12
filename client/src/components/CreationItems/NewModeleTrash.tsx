@@ -188,10 +188,10 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-                fiche Modèle poubelle
+                fiche Modèle dépotoire
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-                Fiche Modèle poubelle : créer un modèle .
+                Fiche Modèle dépotoire : créer un modèle .
               </Typography>
             </Box>
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
@@ -243,10 +243,10 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
           >
             <Box>
               <Typography sx={{ mt: 2 }} variant="h1" color={"primary.main"}>
-              fiche Modèle poubelle
+              fiche Modèle dépotoire
               </Typography>
               <Typography sx={{ pt: 2 }} variant="h3" color={"secondary"}>
-              Fiche Modèle poubelle : modifier un modèle .
+              Fiche Modèle dépotoire : modifier un modèle .
               </Typography>
             </Box>
             <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />

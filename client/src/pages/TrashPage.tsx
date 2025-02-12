@@ -78,8 +78,8 @@ const TrashPage = () => {
       </Accordion>
     </Box>
         <Border
-        title="Modèles de poubelles"
-        subtitle="Visualiser, modifier ou gérer vos modèles de poubelles."
+        title="Modèles de dépotoires"
+        subtitle="Visualiser, modifier ou gérer vos modèles de dépotoires."
         actions={[
             {
                 label: `Désactiver (${
