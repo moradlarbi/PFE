@@ -98,7 +98,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
           Swal.fire({
             position: "center",
             icon: "success",
-            title: `Les poubelles ont bien été ajoutés`,
+            title: `Les dépotoires ont bien été ajoutés`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -107,7 +107,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
           Swal.fire({
             position: "center",
             icon: "error",
-            title: `Les poubelles n'ont pas été ajoutés`,
+            title: `Les dépotoires n'ont pas été ajoutés`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -118,7 +118,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: `Les poubelles n'ont pas été ajoutés`,
+          title: `Les dépotoires n'ont pas été ajoutés`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -200,7 +200,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
           Swal.fire({
             position: "center",
             icon: "success",
-            title: `poubelle ${idx} a bien été supprimé`,
+            title: `dépotoire ${idx} a bien été supprimé`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -210,7 +210,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
           Swal.fire({
             position: "center",
             icon: "error",
-            title: `poubelle ${idx} n'a pas été supprimé`,
+            title: `dépotoire ${idx} n'a pas été supprimé`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -220,7 +220,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: `poubelle ${idx} n'a pas été supprimé`,
+          title: `dépotoire ${idx} n'a pas été supprimé`,
           showConfirmButton: false,
           timer: 1500,
         });

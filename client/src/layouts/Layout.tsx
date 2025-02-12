@@ -85,7 +85,7 @@ const Layout: React.FC = () => {
               <ListItemIcon>
                 <DeleteForever />
               </ListItemIcon>
-              <ListItemText primary="Poubelles" />
+              <ListItemText primary="dépotoires" />
             </ListItem>
           </List>
         </div>
