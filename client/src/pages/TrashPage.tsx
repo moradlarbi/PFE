@@ -66,7 +66,7 @@ const TrashPage = () => {
     <Box>
     <Box p={2}>
       <Typography variant="h4" gutterBottom>
-        Gérer vos camions et leurs modeles
+        Gérer vos dépotoires et leurs modeles
       </Typography>
       <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary expandIcon={<ExpandMore />}>
