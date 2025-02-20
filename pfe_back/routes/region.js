@@ -2,14 +2,140 @@ import express from 'express';
 import {
   getAll,
   getById,
+  getRegions,
   create,
   update,
   deleteRegion,
   updateActiveStatus
 } from '../models/region.js';
 import db from "../db.js"
+import axios from 'axios';
 const router = express.Router();
+async function fetchTrashModels() {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM ModeleTrash", (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
+}
+async function getRegionsCapacity() {
+  return new Promise((resolve, reject) => {
+    db.query(`SELECT R.id, COALESCE(SUM(M.volume), 0) AS capacity
+FROM Region R
+LEFT JOIN Trash T ON R.id = T.idRegion
+LEFT JOIN ModeleTrash M ON T.idModele = M.id
+GROUP BY R.id`, (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
+}
+router.get('/predict_all', async (req, res) => {
+  try {
+    console.log("Début de la prédiction...");
+    
+    getRegions(async (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: "Erreur de récupération des régions" });
+      }
 
+      if (!results.length) {
+        return res.status(404).json({ error: "Aucune région trouvée" });
+      }
+
+      const inputData = results.map(region => ({
+        iso3c: "DZA",
+        region_id: "AFR",
+        income_id: "LMC",
+        composition_food_organic_waste_percent: region.composition_food_organic_waste_percent || null,
+        composition_glass_percent: region.composition_glass_percent || null,
+        composition_metal_percent: region.composition_metal_percent || null,
+        composition_other_percent: region.composition_other_percent || null,
+        composition_paper_cardboard_percent: region.composition_paper_cardboard_percent || null,
+        composition_plastic_percent: region.composition_plastic_percent || null,
+        institutional_framework_department_dedicated_to_solid_waste_management_na: "Yes",
+        legal_framework_long_term_integrated_solid_waste_master_plan_na: "Yes",
+        legal_framework_solid_waste_management_rules_and_regulations_na: "Yes",
+        population_population_number_of_people: region.population || 0,
+        primary_collection_mode_form_of_primary_collection_na: "Yes",
+        separation_existence_of_source_separation_na: "Yes"
+      }));
+
+      // Appel à l'API Flask
+      const response = await axios.post('https://obscure-eureka-75q6xpwp7443p577-5001.app.github.dev/predict', inputData);
+      console.log("Réponse du modèle Flask reçue.");
+
+      // Récupération des prédictions
+      const predictions = response.data.predictions.map((pred, index) => ({
+        region_id: results[index].id,
+        predicted_waste_tons_per_year: pred,
+        name: results[index].nom,
+        population: results[index].population
+      }));
+
+      // Récupération des modèles de dépotoirs
+      const trashModels = await fetchTrashModels()
+      const sortedModels = trashModels.sort((a, b) => b.volume - a.volume);
+      const regionsCapacity = await getRegionsCapacity()
+      // Définir la fréquence de collecte (par défaut quotidienne)
+      const collectionFrequency = 1;
+
+      // Calcul des suggestions de dépotoirs
+      const suggestions = predictions.map((region, index) => {
+        const periodTonnage = region.predicted_waste_tons_per_year * 100 / (365 / collectionFrequency);
+        let needed = periodTonnage;
+        console.log("needed:", needed, "region:", region.region_id, index, "capacity:", regionsCapacity[index].capacity);
+    
+        const selectedModels = [];
+    
+        while (needed > 0) {
+            let bestFitModel = null;
+    
+            for (let model of sortedModels) {
+                if (model.volume <= needed) {
+                    bestFitModel = model;
+                    break; // On prend le premier modèle assez petit pour ne pas gaspiller d'espace
+                }
+            }
+    
+            if (!bestFitModel) {
+                // Si aucun modèle n'est trouvé (trop petit), on prend le plus petit disponible
+                bestFitModel = sortedModels[sortedModels.length - 1];
+            }
+    
+            const numModelsRequired = Math.floor(needed / bestFitModel.volume) || 1;
+            selectedModels.push({ 
+                modelId: bestFitModel.id, 
+                modelName: bestFitModel.name, 
+                numberOfModels: numModelsRequired 
+            });
+    
+            needed -= numModelsRequired * bestFitModel.volume;
+        }
+    
+        return {
+            regionId: region.region_id,
+            regionName: region.name,
+            population: region.population,
+            collectionFrequency,
+            predictedWasteTonsPerYear: region.predicted_waste_tons_per_year,
+            suggestions: selectedModels
+        };
+    });
+
+      res.json(suggestions);
+    });
+
+  } catch (error) {
+    console.error("Erreur dans predict_all :", error);
+    res.status(500).json({ error: "Erreur lors de la prédiction", details: error.message });
+  }
+});
 // Get all Regions
 router.get('/', (req, res) => {
   getAll((err, results) => {

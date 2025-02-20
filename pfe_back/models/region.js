@@ -10,6 +10,13 @@ const getAll = (callback) => {
   `;
   db.query(query, callback);
 };
+const getRegions = (callback) => {
+  const query = `
+    SELECT *
+    FROM Region r
+  `;
+  db.query(query, callback);
+};
 
 const getById = (id, callback) => {
   const query = 'SELECT * FROM Region WHERE id = ?';
@@ -34,7 +41,9 @@ export const updateActiveStatus = (regionId, active, callback) => {
   const query = 'UPDATE region SET active = ? WHERE id = ?';
   db.query(query, [active, regionId], callback);
 };
-export { getAll, getById, create, update, deleteRegion };
+
+
+export { getAll, getById, create, update, deleteRegion,getRegions };
 
 export default {
   getAll,
@@ -42,4 +51,5 @@ export default {
   create,
   update,
   deleteRegion,
+  getRegions
 };
