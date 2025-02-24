@@ -8,44 +8,60 @@ import {
   TableRow,
   Paper,
   Button,
-  LinearProgress,
   Box,
-  Typography,
+  Chip,
 } from "@mui/material"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 
-const mockSuggestions = [
+// This is mock data based on your API response. Replace this with actual API call.
+const mockApiResponse = [
   {
-    region: "North",
-    currentCapacity: 5000,
-    currentUsage: 4000,
-    suggestedAdditional: 20,
-    suggestedModel: "Large Capacity",
-    predictedWaste: 4500,
+    regionId: 1,
+    regionName: "WAhren",
+    population: 13312,
+    collectionFrequency: 1,
+    predictedWasteTonsPerYear: 6853.25224583299,
+    suggestions: [
+      {
+        modelId: 5,
+        modelName: "General Waste Bin",
+        numberOfModels: 9,
+      },
+      {
+        modelId: 3,
+        modelName: "Compost Bin",
+        numberOfModels: 1,
+      },
+      {
+        modelId: 4,
+        modelName: "Hazardous Waste Bin",
+        numberOfModels: 1,
+      },
+    ],
   },
   {
-    region: "South",
-    currentCapacity: 4000,
-    currentUsage: 3500,
-    suggestedAdditional: 15,
-    suggestedModel: "Medium Capacity",
-    predictedWaste: 3800,
-  },
-  {
-    region: "East",
-    currentCapacity: 3000,
-    currentUsage: 2800,
-    suggestedAdditional: 25,
-    suggestedModel: "Small Capacity",
-    predictedWaste: 3200,
-  },
-  {
-    region: "West",
-    currentCapacity: 4500,
-    currentUsage: 4200,
-    suggestedAdditional: 10,
-    suggestedModel: "Large Capacity",
-    predictedWaste: 4600,
+    regionId: 2,
+    regionName: "Belabass",
+    population: 113310,
+    collectionFrequency: 1,
+    predictedWasteTonsPerYear: 37315.1972430501,
+    suggestions: [
+      {
+        modelId: 5,
+        modelName: "General Waste Bin",
+        numberOfModels: 51,
+      },
+      {
+        modelId: 4,
+        modelName: "Hazardous Waste Bin",
+        numberOfModels: 1,
+      },
+      {
+        modelId: 4,
+        modelName: "Hazardous Waste Bin",
+        numberOfModels: 1,
+      },
+    ],
   },
 ]
 
@@ -56,38 +72,36 @@ const RegionSuggestions: React.FC = () => {
         <TableHead>
           <TableRow>
             <TableCell>Region</TableCell>
-            <TableCell align="right">Current Capacity</TableCell>
-            <TableCell align="right">Predicted Waste</TableCell>
-            <TableCell align="right">Suggested Additional</TableCell>
-            <TableCell>Suggested Model</TableCell>
+            <TableCell align="right">Population</TableCell>
+            <TableCell align="right">Collection Frequency</TableCell>
+            <TableCell align="right">Predicted Waste (Tons/Year)</TableCell>
+            <TableCell>Suggested Bins</TableCell>
             <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {mockSuggestions.map((row) => (
-            <TableRow key={row.region}>
+          {mockApiResponse.map((row) => (
+            <TableRow key={row.regionId}>
               <TableCell component="th" scope="row">
-                {row.region}
+                {row.regionName}
               </TableCell>
-              <TableCell align="right">
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Box sx={{ width: "100%", mr: 1 }}>
-                    <LinearProgress variant="determinate" value={(row.currentUsage / row.currentCapacity) * 100} />
-                  </Box>
-                  <Box sx={{ minWidth: 35 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(
-                      (row.currentUsage / row.currentCapacity) * 100,
-                    )}%`}</Typography>
-                  </Box>
+              <TableCell align="right">{row.population.toLocaleString()}</TableCell>
+              <TableCell align="right">{row.collectionFrequency}/day</TableCell>
+              <TableCell align="right">{row.predictedWasteTonsPerYear.toFixed(2)}</TableCell>
+              <TableCell>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {row.suggestions.map((suggestion, index) => (
+                    <Chip
+                      key={index}
+                      label={`${suggestion.numberOfModels} ${suggestion.modelName}`}
+                      variant="outlined"
+                    />
+                  ))}
                 </Box>
-                <Typography variant="caption">{`${row.currentUsage} / ${row.currentCapacity} kg`}</Typography>
               </TableCell>
-              <TableCell align="right">{`${row.predictedWaste} kg`}</TableCell>
-              <TableCell align="right">{row.suggestedAdditional}</TableCell>
-              <TableCell>{row.suggestedModel}</TableCell>
               <TableCell align="right">
                 <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} size="small">
-                  Add Cans
+                  Add Bins
                 </Button>
               </TableCell>
             </TableRow>
