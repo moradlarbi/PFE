@@ -19,8 +19,8 @@ router.get('/', (req, res) => {
 
 // POST /contact — envoyer un message (utilisateur connecté)
 router.post('/', (req, res) => {
-  const idUser = req.user?.id;
-  const { titre, message } = req.body;
+  const { idUser, titre, message } = req.body;
+
 
   if (!idUser) {
     return res.status(401).json({ error: 'Utilisateur non connecté' });

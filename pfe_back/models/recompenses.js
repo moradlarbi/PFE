@@ -12,23 +12,30 @@ export const findAll = (callback) => {
 };
 
 export const getUserRewardCard = (citoyenId, callback) => {
-    const query = `
-      SELECT numero_carte AS cardNumber, titulaire_carte AS cardHolder
-      FROM Recompenses
-      WHERE citoyen_id = ?
-      LIMIT 1
-    `;
-    db.query(query, [citoyenId], (err, results) => {
-      if (err) return callback(err);
-      if (results.length === 0) return callback(null, null);
-      const card = {
-        cardNumber: results[0].cardNumber,
-        cardHolder: results[0].cardHolder,
-        codeBar: "lib/UI/Assets/Images/barcode.gif"
-      };
-      callback(null, card);
-    });
-  };
+  const query = `
+    SELECT 
+      r.numero_carte AS cardNumber,
+      CONCAT(u.first_name, ' ', u.last_name) AS cardHolder,
+      r.points,
+      r.type_recompense AS type
+    FROM Recompenses r
+    JOIN users u ON r.citoyen_id = u.id
+    WHERE r.citoyen_id = ?
+    LIMIT 1
+  `;
+  db.query(query, [citoyenId], (err, results) => {
+    if (err) return callback(err);
+    if (results.length === 0) return callback(null, null);
+    const card = {
+      cardNumber: results[0].cardNumber,
+      cardHolder: results[0].cardHolder,
+      points: results[0].points,
+      codeBar: "lib/UI/Assets/Images/barcode.gif"
+    };
+    callback(null, card);
+  });
+};
+
 
   
 // Incrémenter les points d'un utilisateur

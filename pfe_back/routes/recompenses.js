@@ -25,7 +25,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/carte', (req, res) => {
-    const citoyenId = req.user?.id;
+  //  const citoyenId = req.user?.id;
+    const  citoyenId  = req.body;
   
     if (!citoyenId) {
       return res.status(401).json({ error: 'Utilisateur non connecté' });
