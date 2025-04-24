@@ -2,7 +2,8 @@ import express from 'express';
 import {
   findAll,
   incrementPoints,
-  create
+  create,
+  getUserRewardCard
 } from '../models/recompenses.js';
 
 const router = express.Router();
@@ -13,7 +14,6 @@ router.get('/', (req, res) => {
     if (err) {
       res.status(500).json({ error: err.message });
     } else {
-      // On les renvoie dans le même format que _fetchParticipants()
       const formatted = results.map((row, index) => ({
         rank: index + 1,
         name: row.name,
@@ -25,8 +25,10 @@ router.get('/', (req, res) => {
 });
 
 router.get('/carte', (req, res) => {
-  //  const citoyenId = req.user?.id;
-    const  citoyenId  = req.body;
+    //const citoyenId = req.user?.id;
+    const citoyenId = parseInt(req.query.id);
+
+
   
     if (!citoyenId) {
       return res.status(401).json({ error: 'Utilisateur non connecté' });
