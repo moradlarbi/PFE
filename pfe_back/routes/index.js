@@ -17,6 +17,7 @@ import authRoleRoutes from "./authRole.js";
 import trashRegionRoute from "./trashRegion.js";
 import contactRoutes from "./contact.js";
 import recompensesRoutes from "./recompenses.js";
+import taskRoutes from "./task.js";
 // Define routes
 
 router.use("/modeleCamion", modeleCamionRoutes);
@@ -33,6 +34,7 @@ router.use("/authRole", authRoleRoutes);
 router.use("/trashRegion", trashRegionRoute);
 router.use("/contact", contactRoutes);
 router.use("/recompenses", recompensesRoutes);
+router.use("/task", taskRoutes);
 
 
 export default router;
