@@ -1,6 +1,5 @@
 import os
 import joblib
-import pymysql
 import pandas as pd
 from flask import Flask, request, jsonify
 from urllib.parse import urlparse
@@ -26,7 +25,7 @@ app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json  # Récupère les données depuis Express.js
+    data = request.json  # Récupère les données depuis la requête JSON
     df = pd.DataFrame(data)
 
     # Remplace les valeurs manquantes des colonnes de composition

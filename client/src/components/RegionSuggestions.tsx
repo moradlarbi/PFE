@@ -12,60 +12,30 @@ import {
   Chip,
 } from "@mui/material"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import { useEffect, useState } from "react";
+import { fetchSuggestions } from "../api/region";
 
-// This is mock data based on your API response. Replace this with actual API call.
-const mockApiResponse = [
-  {
-    regionId: 1,
-    regionName: "WAhren",
-    population: 13312,
-    collectionFrequency: 1,
-    predictedWasteTonsPerYear: 6853.25224583299,
-    suggestions: [
-      {
-        modelId: 5,
-        modelName: "General Waste Bin",
-        numberOfModels: 9,
-      },
-      {
-        modelId: 3,
-        modelName: "Compost Bin",
-        numberOfModels: 1,
-      },
-      {
-        modelId: 4,
-        modelName: "Hazardous Waste Bin",
-        numberOfModels: 1,
-      },
-    ],
-  },
-  {
-    regionId: 2,
-    regionName: "Belabass",
-    population: 113310,
-    collectionFrequency: 1,
-    predictedWasteTonsPerYear: 37315.1972430501,
-    suggestions: [
-      {
-        modelId: 5,
-        modelName: "General Waste Bin",
-        numberOfModels: 51,
-      },
-      {
-        modelId: 4,
-        modelName: "Hazardous Waste Bin",
-        numberOfModels: 1,
-      },
-      {
-        modelId: 4,
-        modelName: "Hazardous Waste Bin",
-        numberOfModels: 1,
-      },
-    ],
-  },
-]
+
+
 
 const RegionSuggestions: React.FC = () => {
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSuggestions();
+        setSuggestions(data);
+        console.log("Fetched Suggestions", data);
+      } catch (error) {
+        console.error("Failed to fetch Camions", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const addSuggestions = (regionId: number) => {
+    console.log("true")
+  }
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -80,7 +50,7 @@ const RegionSuggestions: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {mockApiResponse.map((row) => (
+          {suggestions.map((row) => (
             <TableRow key={row.regionId}>
               <TableCell component="th" scope="row">
                 {row.regionName}
@@ -100,8 +70,8 @@ const RegionSuggestions: React.FC = () => {
                 </Box>
               </TableCell>
               <TableCell align="right">
-                <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} size="small">
-                  Add Bins
+                <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} size="small" onClick={addSuggestions(row.regionId)}>
+                  Ajouter les depotoires
                 </Button>
               </TableCell>
             </TableRow>

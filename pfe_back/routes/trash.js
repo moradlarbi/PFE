@@ -95,12 +95,12 @@ router.get('/:id', (req, res) => {
 // Create a new Trash
 router.post('/', (req, res) => {
   console.log(req.body)
-  const { matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
-  create(matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable, (err, results) => {
+  const { matricule, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
+  create(matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.status(201).json({ id: results.insertId, matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable });
+      res.status(201).json({ id: results.insertId, matricule, idModele, idRegion, longitude, latitude, quantity, utilisable });
     }
   });
 });

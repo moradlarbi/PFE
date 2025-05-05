@@ -19,3 +19,7 @@ export const fetchCamions = async () => {
   const response = await axios.get('/camion');
   return response.data;
 };
+export const fetchRegions = async () => {
+  const response = await axios.get('/region');
+  return response.data;
+};

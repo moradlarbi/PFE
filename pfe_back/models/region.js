@@ -13,7 +13,7 @@ const getAll = (callback) => {
 const getRegions = (callback) => {
   const query = `
     SELECT *
-    FROM Region r
+    FROM Region r where r.active = 1
   `;
   db.query(query, callback);
 };

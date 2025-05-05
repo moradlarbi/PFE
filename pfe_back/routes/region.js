@@ -23,11 +23,14 @@ async function fetchTrashModels() {
 }
 async function getRegionsCapacity() {
   return new Promise((resolve, reject) => {
-    db.query(`SELECT R.id, COALESCE(SUM(M.volume), 0) AS capacity
+    db.query(`SELECT R.id, COALESCE(SUM(tr.volume), 0) AS capacity
 FROM Region R
-LEFT JOIN Trash T ON R.id = T.idRegion
-LEFT JOIN ModeleTrash M ON T.idModele = M.id
-GROUP BY R.id`, (err, results) => {
+LEFT JOIN (
+    SELECT t.idRegion, m.volume
+    FROM Trash t
+    LEFT JOIN ModeleTrash m ON t.idModele = m.id
+) AS tr ON R.id = tr.idRegion
+GROUP BY R.id;`, (err, results) => {
       if (err) {
         return reject(err);
       }
@@ -67,7 +70,7 @@ router.get('/predict_all', async (req, res) => {
       }));
 
       // Appel à l'API Flask
-      const response = await axios.post('https://obscure-eureka-75q6xpwp7443p577-5001.app.github.dev/predict', inputData);
+      const response = await axios.post('https://probable-chainsaw-5r6j9x5xx96cp6vj-5001.app.github.dev/predict', inputData);
       console.log("Réponse du modèle Flask reçue.");
 
       // Récupération des prédictions
@@ -78,18 +81,22 @@ router.get('/predict_all', async (req, res) => {
         population: results[index].population
       }));
 
-      // Récupération des modèles de dépotoirs
+      // // Récupération des modèles de dépotoirs
       const trashModels = await fetchTrashModels()
       const sortedModels = trashModels.sort((a, b) => b.volume - a.volume);
-      const regionsCapacity = await getRegionsCapacity()
+      const dataCapacity = await getRegionsCapacity()
+      const regionsCapacity = Object.fromEntries(
+        dataCapacity.map(row => [row.id, row.capacity])
+      );
+      console.log(regionsCapacity)
       // Définir la fréquence de collecte (par défaut quotidienne)
       const collectionFrequency = 1;
 
       // Calcul des suggestions de dépotoirs
       const suggestions = predictions.map((region, index) => {
         const periodTonnage = region.predicted_waste_tons_per_year * 100 / (365 / collectionFrequency);
-        let needed = periodTonnage;
-        console.log("needed:", needed, "region:", region.region_id, index, "capacity:", regionsCapacity[index].capacity);
+        let needed = periodTonnage - regionsCapacity[region.region_id];
+        console.log("needed:", needed, "region:", region.region_id, index, "capacity:", regionsCapacity[region.region_id]);
     
         const selectedModels = [];
     

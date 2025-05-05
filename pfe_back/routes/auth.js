@@ -20,7 +20,7 @@ router.post(
   async (req, res) => {
     try {
       console.log(req.body)
-      const { username, email, password, first_name, last_name, sexe, numPermis, idRole,date_begin } = req.body;
+      const { email, password, first_name, last_name, sexe, numPermis, idRole,date_begin } = req.body;
 
       // Check if user already exists with the given email
       const existingUser = await getUserByEmail(email);
@@ -66,20 +66,15 @@ router.post(
   async (req, res) => {
     try {
       const { email , password } = req.body;
-      console.log(email)
-      console.log(password)
       const result = await getPassword(email);
       
       if (!result) {
         return res.status(401).json({ status: 401, message: "Unauthorized1" });
       }
       const user = result;
+      console.log(user);
 
-      console.log(user.password)
-
-      const pass = req.body.password;
-
-      console.log(pass)
+      const pass = password;
 
       const isPasswordCorrect = bcrypt.compareSync(pass, user.password);
         if (!isPasswordCorrect) {
@@ -122,7 +117,6 @@ router.get("/isAuthenticated", isUserMidd, async (req, res) => {
 
 router.get("/logout", (_req, res) => {
   try {
-    console.log("logout");
     res.clearCookie("token");
     res.status(200).json({ status: 200, message: "OK" });
   } catch (error) {

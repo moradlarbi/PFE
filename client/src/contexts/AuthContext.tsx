@@ -80,10 +80,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            await axios.get('/auth/logout');
-            localStorage.removeItem('token');
-            dispatch({ type: 'LOGOUT' });
-            navigate('/login');
+            await axios.get('/auth/logout')
+            .then(() => {
+                console.log('Logout successful');
+                localStorage.removeItem('token');
+                dispatch({ type: 'LOGOUT' });
+                navigate('/login');
+            }).catch((error) => {
+                console.error('Logout failed:', error);
+                throw error;
+            });
+            
         } catch (error) {
             console.error('Failed to logout:', error);
             throw error;

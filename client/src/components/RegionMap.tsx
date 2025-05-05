@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Polygon, useMap, FeatureGroup, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Polygon, useMap, FeatureGroup, Marker, useMapEvents, Popup } from 'react-leaflet';
 import { Box, Button, TextField } from '@mui/material';
 import { EditControl } from 'react-leaflet-draw';
 import 'leaflet/dist/leaflet.css';
@@ -112,7 +112,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
         const data = await fetchRegions();
         setRegions(data.filter((c) => c.active === 1).map((region: any) => ({
           id: region.id,
-          name: region.name,
+          name: region.nom,
           population: region.population,
           coordinates: region.coordinates,
           depotLongitude: region.depotLongitude,
@@ -179,10 +179,18 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
 
         {regions?.map((region, idx) => (
           <React.Fragment key={idx}>
+            <Polygon
+              positions={region.coordinates.map(coord => [coord.longitude,coord.latitude])}
+              pathOptions={{ color: 'blue' }}
+            >
+            </Polygon>
             <Polygon positions={region.coordinates.map(coord => [coord.longitude,coord.latitude])} />
             {
               /* @ts-ignore */
-              region.depotLatitude && region.depotLongitude && <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} />
+              region.depotLatitude && region.depotLongitude &&
+               <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} >
+                <Popup>{region.name}</Popup>
+              </Marker>
             }
           </React.Fragment>
         ))}

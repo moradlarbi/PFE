@@ -1,9 +1,10 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 const app = express();
-import cookieParser from 'cookie-parser';
-import routes from './routes/index.js';
+import cookieParser from "cookie-parser";
+import routes from "./routes/index.js";
+
 app.use((req, res, next) => {
   console.log(`Request received: ${req.method} ${req.url}`);
   next();
@@ -13,27 +14,26 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
 
+const allowedOrigins = [
+  'https://probable-chainsaw-5r6j9x5xx96cp6vj-3001.app.github.dev',
+  'http://localhost:3000'
+];
+
 const corsOptions = {
-  origin: '*',
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // autorise les requêtes avec origin connu ou sans origin
+    } else {
+      console.log('Blocked by CORS: ', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
-
-// Additional CORS header setting to cover all bases
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
-// Preflight OPTIONS request handling
 app.options('*', cors(corsOptions));
-
+// Your API routes
 app.use('/api', routes);
 
 // Start the server

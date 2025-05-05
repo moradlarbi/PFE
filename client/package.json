@@ -1,5 +1,4 @@
 {
-  "proxy": "https://obscure-eureka-75q6xpwp7443p577-3000.app.github.dev",
   "name": "client",
   "version": "0.1.0",
   "private": true,

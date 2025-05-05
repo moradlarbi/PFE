@@ -22,7 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addOperation, editOperation } from "../../api/driver";
 import Swal from "sweetalert2";
 import moment from "moment";
-import { fetchCamions } from "../../api/camion";
+import { fetchCamions, fetchRegions } from "../../api/camion";
 
 const registerSchema = object({
   last_name: string().nonempty("Le nom est obligatoire"),
@@ -43,6 +43,7 @@ const fields = [
   { field: "numPermis", headerName: "N° Permis", type: "number", add: true, edit: true, required: true },
   { field: "date_begin", headerName: "Date du début", type: "date", add: true, edit: true },
   { field: "idCamion", headerName: "Camion", type: "select", flex: 1, add: true, edit: true, required: true },
+  { field: "idRegion", headerName: "Region", type: "select", flex: 1, add: true, edit: true, required: true },
   {
     field: "sexe",
     headerName: "Genre",
@@ -58,6 +59,10 @@ interface Camion {
   id: string;
   matricule: string;
 }
+interface Region {
+  id: string;
+  nom: string;
+}
 interface NewDriverProps {
   open: boolean;
   handleClose: () => void;
@@ -72,12 +77,15 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   const [checkedSexe, setCheckedSexe] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
   const [camions, setCamions] = useState<Camion[]>([]);
+  const [regions, setRegions] = useState<Region[]>([]);
   const [idCamion, setIdCamion] = useState<string>("")
+  const [idRegion, setIdRegion] = useState<string>("")
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchCamions();
-        setCamions(data);
+        const [camions, regions] = await Promise.all([fetchCamions(), fetchRegions()]);
+        setCamions(camions);
+        setRegions(regions);
       } catch (error) {
         console.error("Failed to fetch Camions", error);
       }
@@ -86,7 +94,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   }, []);
   const addOne = async (values: RegisterInput) => {
     let nom = values.last_name;
-    let newValues = { ...values,idCamion, idRole: 1, active: !checked, sexe: checkedSexe };
+    let newValues = { ...values, idRegion,idCamion, idRole: 1, active: !checked, sexe: checkedSexe };
     console.log(newValues);
 
     await addOperation({...newValues})
@@ -201,6 +209,9 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
   const handleSelectChange = (event: React.ChangeEvent<any>) => {
     setIdCamion(event.target.value as string);
   };
+  const handleSelectRegion = (event: React.ChangeEvent<any>) => {
+    setIdRegion(event.target.value as string);
+  };
   useEffect(() => {}, [item]);
 
   return (
@@ -232,7 +243,8 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
             >
               {fields.filter((c) => c.add).map((col) => (
                 col.type === "select" ? (
-                  <FormControl key={col.field} fullWidth>
+                  col.field === "idCamion" ? (
+                    <FormControl key={col.field} fullWidth>
                     <InputLabel>{col.headerName}</InputLabel>
                     <Select
                       label={col.headerName}
@@ -247,6 +259,23 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                       ))}
                     </Select>
                   </FormControl>
+                  ) : (
+                    <FormControl key={col.field} fullWidth>
+                      <InputLabel>{col.headerName}</InputLabel>
+                      <Select
+                        label={col.headerName}
+                        value={idRegion}
+                        onChange={handleSelectRegion}
+                        error={!!(errors as FieldErrors<RegisterInput>)[col.field as keyof RegisterInput]}
+                      >
+                        {regions.map((region) => (
+                          <MenuItem key={region.id} value={region.id}>
+                            {region.nom}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )
                 ) : (
                   <TextField
                     key={col.field}
@@ -260,6 +289,7 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                     InputProps={{
                       endAdornment: <InputAdornment position="start"></InputAdornment>,
                     }}
+                    InputLabelProps={col.type === 'date' ? { shrink: true } : undefined}
                   />
                 )
               ))}
@@ -318,7 +348,8 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
             >
               {fields.filter((c) => c.edit).map((col) => (
                 col.type === "select" ? (
-                  <FormControl key={col.field} fullWidth required={col.required}>
+                  col.field === "idCamion" ? (
+                    <FormControl key={col.field} fullWidth required={col.required}>
                     <InputLabel>{col.headerName}</InputLabel>
                     <Select
                       label={col.headerName}
@@ -333,6 +364,23 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
                       ))}
                     </Select>
                   </FormControl>
+                  ) : (
+                    <FormControl key={col.field} fullWidth required={col.required}>
+                      <InputLabel>{col.headerName}</InputLabel>
+                      <Select
+                        label={col.headerName}
+                        name={col.field}
+                        value={item[col.field] || ""}
+                        onChange={handleChangeUpdate}
+                      >
+                        {regions.map((region) => (
+                          <MenuItem key={region.id} value={region.id}>
+                            {region.nom}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )
                 ) : (col.type === "date" ? (
                   <TextField
                     key={col.field}

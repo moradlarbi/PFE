@@ -35,6 +35,7 @@ const DriverPage = () => {
           return moment(params).format('DD/MM/YYYY');
         }, add: true,edit: true,},
         { field: "matricule", headerName: "N° camion", type: "string", flex: 1, add: true,edit: true},
+        { field: "Region", headerName: "Region", type: "string", flex: 1, add: true,edit: true},
         {
             field: "active",
             headerName: "Etat",
@@ -264,7 +265,7 @@ const DriverPage = () => {
           }}
           checkboxSelection
           refreshParent={refresh}
-          fetchurl={`/user?populate=*&filters[idRole][$eq]=1&sort=id:ASC`}
+          fetchurl={`/user?filters[idRole][$eq]=1&sort=id:ASC`}
           columns={columns}
           sx={{
             fontSize: 12,

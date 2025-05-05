@@ -10,22 +10,23 @@ export const findById = (id, callback) => {
 };
 
 export const create = (userData, callback) => {
-  const { username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion, idDepot } = userData;
+  console.log("data",userData)
+  const { username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion,idRegion } = userData;
   const query = `
-    INSERT INTO users (username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion, idDepot)
+    INSERT INTO users (username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion,idRegion)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion, idDepot], callback);
+  db.query(query, [username, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion,idRegion], callback);
 };
 
 export const update = (id, userData, callback) => {
-  const { username,active, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion, idDepot } = userData;
+  const { username,active, email, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion,idRegion } = userData;
   const query = `
     UPDATE users 
-    SET username = ?,active= ?, email = ?, password = ?, first_name = ?, last_name = ?, sexe = ?, date_begin = ?, numPermis = ?, idRole = ?, idCamion = ?, idDepot = ?
+    SET username = ?,active= ?, email = ?, first_name = ?, last_name = ?, sexe = ?, date_begin = ?, numPermis = ?, idRole = ?, idCamion = ?, idRegion= ?
     WHERE id = ?
   `;
-  db.query(query, [username,active, email, password, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion, idDepot, id], callback);
+  db.query(query, [username,active, email, first_name, last_name, sexe, date_begin, numPermis, idRole, idCamion,idRegion, id], callback);
 };
 export const updateActiveStatus = (userId, active, callback) => {
   const query = 'UPDATE users SET active = ? WHERE id = ?';

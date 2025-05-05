@@ -14,3 +14,7 @@ export const fetchRegions = async () => {
 export const editStatus = (newData: any, id: number) => {
   return axios.put(`/region/active/${id}`, newData);
 };
+export const fetchSuggestions = async () => {
+  const response = await axios.get('/region/predict_all');
+  return response.data;
+};

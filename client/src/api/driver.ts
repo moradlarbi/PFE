@@ -1,7 +1,7 @@
 import axios from "./axios";
 
 export const addOperation = (newData : any) => {
-  return axios.post("/auth/signup", newData);
+  return axios.post("/user", newData);
 };
 export const editOperation = (newData: any, id: number) => {
   return axios.put(`/user/${id}`, newData);

@@ -7,12 +7,14 @@ import {
   deleteUser,
   updateActiveStatus
 } from '../models/user.js';
+import { getUserByEmail } from '../models/authModels.js';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
 // Get all users
 const constructQuery = (query) => {
-  let baseQuery = 'SELECT users.*, Camion.matricule as matricule FROM users JOIN Camion ON users.idCamion=Camion.id';
+  let baseQuery = 'SELECT users.*, Camion.matricule as matricule, Region.nom as Region FROM users LEFT JOIN Camion ON users.idCamion=Camion.id LEFT JOIN Region ON users.idRegion=Region.id';
   const whereClauses = [];
   const orderClauses = [];
   let limitClause = '';
@@ -108,16 +110,65 @@ router.get('/:id', async (req, res) => {
 
 // Create new user
 router.post('/', async (req, res) => {
-  const newUser = req.body;
   try {
+    const {
+      email,
+      password,
+      first_name,
+      last_name,
+      sexe,
+      numPermis,
+      idRole,
+      idRegion,
+      idCamion,
+      idDepot,
+      date_begin,
+      active
+    } = req.body;
+
+    // Vérifie les champs obligatoires
+    if (!email || !password || !first_name || !last_name || !idRole) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Vérifie si l'utilisateur existe déjà
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ status: 400, message: 'Email already exists' });
+    }
+
+    // Hash du mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newData = {
+      email,
+      password: hashedPassword,
+      username: `${last_name}${first_name}`,
+      first_name,
+      last_name,
+      sexe,
+      numPermis,
+      idRole,
+      idRegion,
+      idCamion,
+      idDepot,
+      date_begin: date_begin ? new Date(date_begin) : new Date(),
+      active: active ?? true,
+    };
+    console.log("hey")
     const results = await new Promise((resolve, reject) => {
-      create(newUser, (err, results) => {
-        if (err) reject(err);
-        else resolve(results);
+      create(newData, (err, results) => {
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+        resolve(results);
       });
     });
+
     res.status(201).json({ id: results.insertId });
   } catch (err) {
+    console.error('Error creating user:', err);
     res.status(500).json({ error: err.message });
   }
 });
