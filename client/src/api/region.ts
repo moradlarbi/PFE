@@ -18,3 +18,6 @@ export const fetchSuggestions = async () => {
   const response = await axios.get('/region/predict_all');
   return response.data;
 };
+export const addSuggestions = (newData: any) => {
+  return axios.post('/region/add_suggest', newData);
+}

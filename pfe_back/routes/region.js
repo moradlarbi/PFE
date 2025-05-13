@@ -8,8 +8,10 @@ import {
   deleteRegion,
   updateActiveStatus
 } from '../models/region.js';
+import { getByRegion} from "../models/trash.js"
 import db from "../db.js"
 import axios from 'axios';
+import { polygon, randomPoint, booleanPointInPolygon, bbox } from '@turf/turf'
 const router = express.Router();
 async function fetchTrashModels() {
   return new Promise((resolve, reject) => {
@@ -38,9 +40,31 @@ GROUP BY R.id;`, (err, results) => {
     });
   });
 }
+
+export function generatePointsInsideRegion(regionCoordinates, existingPoints, totalPoints) {
+  const p = polygon([
+    [...regionCoordinates.map(coord => [coord.longitude, coord.latitude]), 
+    [regionCoordinates[0].longitude, regionCoordinates[0].latitude]] // on ferme le polygone
+  ]);
+
+  const newPoints = [...existingPoints];
+
+  while (newPoints.length < totalPoints) {
+    const random = randomPoint(1, { bbox: bbox(p) }).features[0];
+
+    if (booleanPointInPolygon(random, p)) {
+      newPoints.push({
+        longitude: random.geometry.coordinates[0],
+        latitude: random.geometry.coordinates[1]
+      });
+    }
+  }
+
+  return newPoints;
+}
 router.get('/predict_all', async (req, res) => {
   try {
-    console.log("Début de la prédiction...");
+    //console.log("Début de la prédiction...");
     
     getRegions(async (err, results) => {
       if (err) {
@@ -71,7 +95,7 @@ router.get('/predict_all', async (req, res) => {
 
       // Appel à l'API Flask
       const response = await axios.post('https://probable-chainsaw-5r6j9x5xx96cp6vj-5001.app.github.dev/predict', inputData);
-      console.log("Réponse du modèle Flask reçue.");
+      //console.log("Réponse du modèle Flask reçue.");
 
       // Récupération des prédictions
       const predictions = response.data.predictions.map((pred, index) => ({
@@ -88,7 +112,7 @@ router.get('/predict_all', async (req, res) => {
       const regionsCapacity = Object.fromEntries(
         dataCapacity.map(row => [row.id, row.capacity])
       );
-      console.log(regionsCapacity)
+      //console.log(regionsCapacity)
       // Définir la fréquence de collecte (par défaut quotidienne)
       const collectionFrequency = 1;
 
@@ -96,7 +120,7 @@ router.get('/predict_all', async (req, res) => {
       const suggestions = predictions.map((region, index) => {
         const periodTonnage = region.predicted_waste_tons_per_year * 100 / (365 / collectionFrequency);
         let needed = periodTonnage - regionsCapacity[region.region_id];
-        console.log("needed:", needed, "region:", region.region_id, index, "capacity:", regionsCapacity[region.region_id]);
+        //console.log("needed:", needed, "region:", region.region_id, index, "capacity:", regionsCapacity[region.region_id]);
     
         const selectedModels = [];
     
@@ -142,6 +166,74 @@ router.get('/predict_all', async (req, res) => {
     console.error("Erreur dans predict_all :", error);
     res.status(500).json({ error: "Erreur lors de la prédiction", details: error.message });
   }
+});
+
+router.post('/add_suggest', (req, res) => {
+  console.log(req.body)
+  //fetch region cordinates
+
+  const { regionId, suggestions } = req.body;
+  getById(regionId, (err, results) => {
+  if (err) {
+    console.error('Database error:', err);
+    res.status(500).send(err);
+  } else if (results.length === 0) {
+    res.status(404).send({ message: 'Region not found' });
+  } else {
+    const regionInfo = {
+      id: results[0].id,
+      nom: results[0].nom,
+      depotLongitude: results[0].depotLongitude,
+      depotLatitude: results[0].depotLatitude,
+      active: results[0].active,
+      coordinates: results
+        .filter(row => row.longitude !== null && row.latitude !== null)
+        .map(row => ({
+          longitude: row.longitude,
+          latitude: row.latitude
+        }))
+    };
+    getByRegion(regionId, (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      res.status(500).send(err);
+    } 
+    else {
+      const existingPoints = results.map(row => ({
+        longitude: row.longitude,
+        latitude: row.latitude
+      }));
+      console.log("existingPoints", existingPoints)
+      const totalPoints = suggestions.reduce((sum, suggestion) => sum + suggestion.numberOfModels, 0);
+
+      const newPoints = generatePointsInsideRegion(regionInfo.coordinates, existingPoints, totalPoints);
+      console.log("newPoints", newPoints)
+      // Insert the new points into the database
+      // const insertQuery = `
+      //   INSERT INTO Trash (idModele, idRegion, longitude, latitude)
+      //   VALUES ?
+      // `;
+      // const values = [];
+      // suggestions.forEach(suggestion => {
+      //   for (let i = 0; i < suggestion.numberOfModels; i++) {
+      //     values.push([suggestion.modelId, regionId, newPoints[i].longitude, newPoints[i].latitude]);
+      //   }
+      // });
+      // db.query(insertQuery, [values], (err) => {
+      //   if (err) {
+      //     console.error('Database error:', err);
+      //     res.status(500).send(err);
+      //   } else {
+      //     res.status(201).json({ message: 'Suggestions added successfully' });
+      //   }
+      // });
+    }
+    });
+    
+  }
+});
+
+
 });
 // Get all Regions
 router.get('/', (req, res) => {

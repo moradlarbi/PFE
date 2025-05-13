@@ -13,13 +13,61 @@ import {
 } from "@mui/material"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { useEffect, useState } from "react";
-import { fetchSuggestions } from "../api/region";
+import { fetchSuggestions,addSuggestions } from "../api/region";
+import Swal from "sweetalert2";
 
 
 
 
 const RegionSuggestions: React.FC = () => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
+   const [refresh, setRefresh] = useState(false);
+  const addOperation = async (regionId: number) => {
+    const selectedRegion = suggestions.find((region) => region.regionId === regionId);
+    if (selectedRegion) { 
+      console.log("Selected Region", selectedRegion);
+      await addSuggestions(selectedRegion)
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: `Les dépotoires ont bien été ajouté`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setRefresh(!refresh);
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: `Erreur lors de l'ajout des dépotoires`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        })
+        .catch((e) => {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: `Erreur lors de l'ajout des dépotoires`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        });
+    }
+    else {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: `Région non trouvée`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,9 +81,7 @@ const RegionSuggestions: React.FC = () => {
     fetchData();
   }, []);
 
-  const addSuggestions = (regionId: number) => {
-    console.log("true")
-  }
+  
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -70,7 +116,7 @@ const RegionSuggestions: React.FC = () => {
                 </Box>
               </TableCell>
               <TableCell align="right">
-                <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} size="small" onClick={addSuggestions(row.regionId)}>
+                <Button variant="outlined" startIcon={<AddCircleOutlineIcon />} size="small" onClick={() => addOperation(row.regionId)}>
                   Ajouter les depotoires
                 </Button>
               </TableCell>

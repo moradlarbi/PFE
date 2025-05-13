@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { Border } from '../components/Border';
 import { addOperation, editStatus } from '../api/region';
 import RegionMap from '../components/RegionMap';
+import NewRegion from '../components/CreationItems/NewRegion';
 const RegionPage = () => {
     const [refresh, setrefresh] = useState(false);
     const theme = useTheme()
@@ -26,7 +27,9 @@ const RegionPage = () => {
     const columns: Columns[] = [
         { field: "id", headerName: "Réf", type: "string", width: 100 },
         { field: "nom", headerName: "Nom", type: "string", flex: 1, add: true,edit: true,},
-        { field: "population", headerName: "Population", type: "number", flex: 1, add: true,edit: true,},
+        { field: "population", headerName: "Population", type: "string", flex: 1, add: true,edit: true, valueGetter: (params: any) =>  {
+          return `${params} Habitants`
+        }},
         {
           field: "active",
           headerName: "Etat",
@@ -142,10 +145,27 @@ const RegionPage = () => {
       const [expanded, setExpanded] = useState<boolean>(false);
       const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
       let open = Boolean(anchorEl);
+      const [openDialog, setOpenDialog] = useState(false)
 
 
   return (
       <>
+      {openDialog && <NewRegion handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
+                  Swal.fire({
+                    icon: "warning",
+                    title: "Êtes-vous sûr ?",
+                    text: "Your changes will not be saved!",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, discard changes!",
+                  }).then((result : any) => {
+                    if (result.isConfirmed) {
+                      setOpenDialog(false);
+                      setrefresh(!refresh);
+                    }
+                  });
+                }} handleRefresh={() => setrefresh(!refresh)} open={openDialog} item={item} setItem={setItem} />}
       <Box p={2}>
       <Typography variant="h4" gutterBottom>
         Gérer vos régions
@@ -224,6 +244,8 @@ const RegionPage = () => {
           }}
           onCellDoubleClick={(params: GridCellParams) => {
             console.log(params.row)
+            setItem(params.row)
+            setOpenDialog(true)
           }}
           checkboxSelection
           refreshParent={refresh}

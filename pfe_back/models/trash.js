@@ -8,7 +8,10 @@ const getById = (id, callback) => {
   const query = 'SELECT * FROM Trash WHERE id = ?';
   db.query(query, [id], callback);
 };
-
+const getByRegion = (idRegion, callback) => {
+  const query = 'SELECT * FROM Trash WHERE idRegion = ?';
+  db.query(query, [idRegion], callback);
+}
 const create = (matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, callback) => {
   const query = `
     INSERT INTO Trash (matricule, idModele, idRegion, longitude, latitude, quantity, utilisable)
@@ -31,7 +34,7 @@ const deleteTrash = (id, callback) => {
   db.query(query, [id], callback);
 };
 
-export { getAll, getById, create, update, deleteTrash };
+export { getAll, getById, create, update, deleteTrash,getByRegion };
 
 export default {
   getAll,
@@ -39,4 +42,5 @@ export default {
   create,
   update,
   deleteTrash,
+  getByRegion
 };

@@ -19,7 +19,11 @@ const getRegions = (callback) => {
 };
 
 const getById = (id, callback) => {
-  const query = 'SELECT * FROM Region WHERE id = ?';
+  const query = `SELECT 
+      r.*,
+      c.longitude, c.latitude
+    FROM Region r
+    LEFT JOIN Coordonnees c ON r.id = c.idRegion WHERE r.id = ?`;
   db.query(query, [id], callback);
 };
 
