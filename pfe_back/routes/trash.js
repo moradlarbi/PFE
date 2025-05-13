@@ -95,12 +95,12 @@ router.get('/:id', (req, res) => {
 // Create a new Trash
 router.post('/', (req, res) => {
   console.log(req.body)
-  const { matricule, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
-  create(matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, (err, results) => {
+  const {  idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
+  create( idModele, idRegion, longitude, latitude, quantity, utilisable, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.status(201).json({ id: results.insertId, matricule, idModele, idRegion, longitude, latitude, quantity, utilisable });
+      res.status(201).json({ id: results.insertId, idModele, idRegion, longitude, latitude, quantity, utilisable });
     }
   });
 });
@@ -108,8 +108,8 @@ router.post('/', (req, res) => {
 // Update an existing Trash
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  const { matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
-  update(id, matricule, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable, (err) => {
+  const {  couleur, idModele, idRegion, longitude, latitude, quantity, utilisable } = req.body;
+  update(id, couleur, idModele, idRegion, longitude, latitude, quantity, utilisable, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {

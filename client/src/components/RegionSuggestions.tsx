@@ -29,7 +29,7 @@ const RegionSuggestions: React.FC = () => {
       await addSuggestions(selectedRegion)
         .then((res) => {
           console.log(res);
-          if (res.status === 200) {
+          if (res.status === 201) {
             Swal.fire({
               position: "center",
               icon: "success",
@@ -79,7 +79,7 @@ const RegionSuggestions: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
 
   
   return (

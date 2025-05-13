@@ -49,7 +49,7 @@ export function generatePointsInsideRegion(regionCoordinates, existingPoints, to
 
   const newPoints = [...existingPoints];
 
-  while (newPoints.length < totalPoints) {
+  while (newPoints.length < totalPoints + existingPoints.length) {
     const random = randomPoint(1, { bbox: bbox(p) }).features[0];
 
     if (booleanPointInPolygon(random, p)) {
@@ -60,7 +60,7 @@ export function generatePointsInsideRegion(regionCoordinates, existingPoints, to
     }
   }
 
-  return newPoints;
+  return newPoints.slice(existingPoints.length);
 }
 router.get('/predict_all', async (req, res) => {
   try {
@@ -159,7 +159,7 @@ router.get('/predict_all', async (req, res) => {
         };
     });
 
-      res.json(suggestions);
+      res.json(suggestions.filter(suggestion => suggestion.suggestions.length > 0));
     });
 
   } catch (error) {
@@ -209,24 +209,27 @@ router.post('/add_suggest', (req, res) => {
       const newPoints = generatePointsInsideRegion(regionInfo.coordinates, existingPoints, totalPoints);
       console.log("newPoints", newPoints)
       // Insert the new points into the database
-      // const insertQuery = `
-      //   INSERT INTO Trash (idModele, idRegion, longitude, latitude)
-      //   VALUES ?
-      // `;
-      // const values = [];
-      // suggestions.forEach(suggestion => {
-      //   for (let i = 0; i < suggestion.numberOfModels; i++) {
-      //     values.push([suggestion.modelId, regionId, newPoints[i].longitude, newPoints[i].latitude]);
-      //   }
-      // });
-      // db.query(insertQuery, [values], (err) => {
-      //   if (err) {
-      //     console.error('Database error:', err);
-      //     res.status(500).send(err);
-      //   } else {
-      //     res.status(201).json({ message: 'Suggestions added successfully' });
-      //   }
-      // });
+      const insertQuery = `
+        INSERT INTO Trash (idModele, idRegion, longitude, latitude, quantity, utilisable)
+        VALUES ?
+      `;
+      const values = [];
+      let k = 0;
+      for (let i = 0; i < suggestions.length; i++) {
+        const suggestion = suggestions[i];
+        for (let j = 0; j < suggestion.numberOfModels; j++) {
+          values.push([suggestion.modelId, regionId, newPoints[k].latitude, newPoints[k].longitude, 0, 1]);
+          k++;
+        }
+      }
+      db.query(insertQuery, [values], (err) => {
+        if (err) {
+          console.error('Database error:', err);
+          res.status(500).send(err);
+        } else {
+          res.status(201).json({ message: 'Suggestions added successfully' });
+        }
+      });
     }
     });
     

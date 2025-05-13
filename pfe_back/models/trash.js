@@ -12,21 +12,21 @@ const getByRegion = (idRegion, callback) => {
   const query = 'SELECT * FROM Trash WHERE idRegion = ?';
   db.query(query, [idRegion], callback);
 }
-const create = (matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, callback) => {
+const create = ( idModele, idRegion, longitude, latitude, quantity, utilisable, callback) => {
   const query = `
-    INSERT INTO Trash (matricule, idModele, idRegion, longitude, latitude, quantity, utilisable)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Trash ( idModele, idRegion, longitude, latitude, quantity, utilisable)
+    VALUES ( ?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [matricule, idModele, idRegion, longitude, latitude, quantity, utilisable], callback);
+  db.query(query, [ idModele, idRegion, longitude, latitude, quantity, utilisable], callback);
 };
 
-const update = (id, matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, callback) => {
+const update = (id, idModele, idRegion, longitude, latitude, quantity, utilisable, callback) => {
   const query = `
     UPDATE Trash
-    SET matricule = ?, idModele = ?, idRegion = ?, longitude = ?, latitude = ?, quantity = ?, utilisable = ?
+    SET  idModele = ?, idRegion = ?, longitude = ?, latitude = ?, quantity = ?, utilisable = ?
     WHERE id = ?
   `;
-  db.query(query, [matricule, idModele, idRegion, longitude, latitude, quantity, utilisable, id], callback);
+  db.query(query, [ idModele, idRegion, longitude, latitude, quantity, utilisable, id], callback);
 };
 
 const deleteTrash = (id, callback) => {
