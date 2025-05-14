@@ -186,8 +186,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
             </Polygon>
             <Polygon positions={region.coordinates.map(coord => [coord.longitude,coord.latitude])} />
             {
-              /* @ts-ignore */
-              region.depotLatitude && region.depotLongitude &&
+              region.depotLatitude && region.depotLongitude &&  /* @ts-ignore */
                <Marker position={[region.depotLatitude, region.depotLongitude]} icon={customIcon} >
                 <Popup>{region.name}</Popup>
               </Marker>

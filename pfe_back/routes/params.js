@@ -6,9 +6,61 @@ import {
   update,
   deleteParams
 } from '../models/params.js';
-
+import db from '../db.js';
 const router = express.Router();
 
+router.get("/kpi", (req, res) => {
+  const queryTrash = `Select count(*) as total_poubelle from trash where utilisable = 1;`;
+  const queryChauffeur = `Select count(*) as total_chauffeur from users where idRole = 1 AND active = 1;`;
+  const queryCapacity = 'Select sum(M.volume) as total_capacite from Trash T LEFT JOIN modeletrash M on T.idModele = M.id;'
+
+  // Execute the queries in parallel
+  db.query(queryTrash, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error executing query');
+    }
+    const totalPoubelle = results[0].total_poubelle;
+
+    db.query(queryChauffeur, (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error executing query');
+      }
+      const totalChauffeur = results[0].total_chauffeur;
+
+      db.query(queryCapacity, (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Error executing query');
+        }
+        const totalCapacite = results[0].total_capacite;
+        console.log(totalCapacite);
+        console.log(totalChauffeur);
+        console.log(totalPoubelle);
+        // Send the response with all three values
+        res.json({ totalPoubelle, totalChauffeur, totalCapacite });
+      });
+    });
+  });
+
+})
+
+router.get("/capacity", (req,res) => {
+  const query = `SELECT
+  SUM((t.quantity / 100.0) * m.volume) AS volume_utilise,
+  SUM(m.volume) AS capacite_totale_theorique
+  FROM trash t
+  JOIN modeletrash m ON t.idModele = m.id;`
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error executing query');
+    }
+    const {volume_utilise, capacite_totale_theorique} = results[0];
+    res.json({ volume_utilise, capacite_totale_theorique });
+  })
+})
 // Get all Params
 router.get('/', (req, res) => {
   getAll((err, results) => {

@@ -75,7 +75,7 @@ const RegionSuggestions: React.FC = () => {
         setSuggestions(data);
         console.log("Fetched Suggestions", data);
       } catch (error) {
-        console.error("Failed to fetch Camions", error);
+        console.error("Failed to fetch suggestions", error);
       }
     };
     fetchData();
@@ -89,9 +89,9 @@ const RegionSuggestions: React.FC = () => {
           <TableRow>
             <TableCell>Region</TableCell>
             <TableCell align="right">Population</TableCell>
-            <TableCell align="right">Collection Frequency</TableCell>
-            <TableCell align="right">Predicted Waste (Tons/Year)</TableCell>
-            <TableCell>Suggested Bins</TableCell>
+            <TableCell align="right">Fréquence de collection</TableCell>
+            <TableCell align="right">Quantité de Déchets générée (Tons/An)</TableCell>
+            <TableCell>Dépotoires suggérés</TableCell>
             <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
@@ -102,7 +102,7 @@ const RegionSuggestions: React.FC = () => {
                 {row.regionName}
               </TableCell>
               <TableCell align="right">{row.population.toLocaleString()}</TableCell>
-              <TableCell align="right">{row.collectionFrequency}/day</TableCell>
+              <TableCell align="right">{row.collectionFrequency}/jour</TableCell>
               <TableCell align="right">{row.predictedWasteTonsPerYear.toFixed(2)}</TableCell>
               <TableCell>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

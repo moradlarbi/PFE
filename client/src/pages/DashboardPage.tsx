@@ -1,10 +1,11 @@
 import type React from "react"
 import { Typography, Grid, Paper, Box, Button } from "@mui/material"
 import RegionSuggestions from "../components/RegionSuggestions"
-import WastePredictionChart from "../components/WastePredictionChart"
 import CapacityOverview from "../components/CapacityOverview"
 import AddIcon from "@mui/icons-material/Add"
 import { Link } from 'react-router-dom'
+import UserMessagesSection from "../components/UserMessagesSection"
+import KpisSection from "../components/KpisSection"
 
 const DashboardPage: React.FC = () => {
   return (
@@ -28,19 +29,22 @@ const DashboardPage: React.FC = () => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
+          <KpisSection />
+        </Grid>
+        {/* Section Overview Capacité */}
+        <Grid item xs={12} md={6}> {/* Adjusted to take half width on medium screens */}
           <Paper sx={{ p: 2, height: "100%" }}>
             <Typography variant="h6" gutterBottom>
-              Overview de la capcité
+              Overview de la capacité
             </Typography>
             <CapacityOverview />
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Les tendances de prédictions
-            </Typography>
-            <WastePredictionChart />
+
+        {/* Section Messages Utilisateurs */}
+        <Grid item xs={12} md={6}> {/* Adjusted to take half width on medium screens */}
+          <Paper sx={{ p: 2, height: "100%", display: "flex", flexDirection: "column" }}>
+            <UserMessagesSection />
           </Paper>
         </Grid>
       </Grid>

@@ -1,14 +1,25 @@
 import type React from "react"
 import { Box, Typography, CircularProgress } from "@mui/material"
+import { useEffect, useState } from "react"
+import { fetchCapacity } from "../api/dashboard"
 
 const CapacityOverview: React.FC = () => {
-  const totalCapacity = 16500
-  const usedCapacity = 14500
-  const percentage = Math.round((usedCapacity / totalCapacity) * 100)
-
+  const [capacity, setCapacity] = useState<any>(null)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchCapacity();
+        setCapacity(data);
+        console.log("Fetched capacity", data);
+      } catch (error) {
+        console.error("Failed to fetch capacity", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <Box sx={{ position: "relative", display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
-      <CircularProgress variant="determinate" value={percentage} size={200} thickness={5} />
+      <CircularProgress variant="determinate" value={Math.round((capacity?.volume_utilise / capacity?.capacite_totale_theorique) * 100) ?? 0} size={200} thickness={5} />
       <Box
         sx={{
           top: 0,
@@ -22,13 +33,13 @@ const CapacityOverview: React.FC = () => {
         }}
       >
         <Typography variant="h4" component="div" color="text.secondary">
-          {`${percentage}%`}
+          {`${Math.round((capacity?.volume_utilise / capacity?.capacite_totale_theorique) * 100) ?? 0}%`}
         </Typography>
       </Box>
       <Typography variant="h6" sx={{ mt: 2 }}>
-        Total Capacity Used
+        Capacité utilisé en temps réel 
       </Typography>
-      <Typography variant="body1">{`${usedCapacity} / ${totalCapacity} kg`}</Typography>
+      <Typography variant="body1">{`${capacity?.volume_utilise ?? 0} / ${capacity?.capacite_totale_theorique ?? 0} kg`}</Typography>
     </Box>
   )
 }
