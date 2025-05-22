@@ -48,11 +48,18 @@ export const incrementPoints = (citoyenId, increment, callback) => {
   db.query(query, [increment, citoyenId], callback);
 };
 
-// Ajouter une récompense (nouvel utilisateur)
+
 export const create = (citoyenId, points, type, date, callback) => {
+  const numeroCarte = generateCardNumber();
   const query = `
-    INSERT INTO Recompenses (citoyen_id, points, type_recompense, date_recompense)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO Recompenses (citoyen_id, numero_carte, points, type_recompense, date_recompense)
+    VALUES (?, ?, ?, ?, ?)
   `;
-  db.query(query, [citoyenId, points, type, date], callback);
+  db.query(query, [citoyenId, numeroCarte, points, type, date], callback);
 };
+
+const generateCardNumber = () => {
+  const random = Math.floor(1000000000000000 + Math.random() * 9000000000000000);
+  return random.toString().replace(/(.{4})/g, '$1 ').trim(); // format : "1234 5678 9012 3456"
+};
+

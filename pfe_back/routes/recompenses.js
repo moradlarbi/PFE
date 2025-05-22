@@ -43,7 +43,8 @@ router.get('/carte', (req, res) => {
   
 // POST /recompenses/increment — incrémenter les points d’un utilisateur connecté
 router.post('/increment', (req, res) => {
-  const citoyenId = req.user?.id; 
+const citoyenId = parseInt(req.query.id || req.body.id); // supporte les deux
+
   const { increment = 10 } = req.body;
 
   if (!citoyenId) {
@@ -56,6 +57,35 @@ router.post('/increment', (req, res) => {
     } else {
       res.status(200).json({ message: 'Points mis à jour avec succès' });
     }
+  });
+});
+
+router.post('/init', (req, res) => {
+const citoyenId = parseInt(req.query.id || req.body.id); // supporte les deux
+
+  if (!citoyenId) {
+    return res.status(401).json({ error: 'Utilisateur non connecté' });
+  }
+
+  getUserRewardCard(citoyenId, (err, card) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (card) {
+      return res.status(200).json({ message: 'Carte déjà existante', card });
+    }
+
+    const points = 0;
+    const type = 'classique';
+    const date = new Date();
+
+    create(citoyenId, points, type, date, (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      getUserRewardCard(citoyenId, (err, newCard) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ message: 'Carte créée avec succès', card: newCard });
+      });
+    });
   });
 });
 
