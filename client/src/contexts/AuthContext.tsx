@@ -37,7 +37,6 @@ const authReducer = (state: AuthState, action: { type: string; payload?: User })
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(authReducer, { user: null, loading: false });
     const navigate = useNavigate();
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) return;

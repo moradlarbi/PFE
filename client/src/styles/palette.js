@@ -10,10 +10,10 @@ function createGradient(color1, color2) {
   };
   
   const PRIMARY = {
-  light: "#E6F4EA",       // soft minty green for backgrounds
+  light: "#E8F3FF",       // soft minty green for backgrounds
   main: "#2E8B57",        // SeaGreen (primary action color)
-  dark: "#1E5E3F",        // deeper version of main
-  darker: "#143E2A",      // even deeper, good for text on light
+  dark: "#000",        // deeper version of main
+  darker: "#000000",      // even deeper, good for text on light
   contrastText: "#fff",   // white for buttons on green
 };
 
@@ -21,7 +21,7 @@ const SECONDARY = {
   lighter: "#F4F4F4",     // soft gray for UI elements
   light: "#DDE2DE",       // very light green-gray
   main: "#6B8E23",        // OliveDrab – muted contrast green
-  dark: "#4E6727",        // dark olive, could be used for hover
+  dark: "#000",        // dark olive, could be used for hover
   contrastText: "#fff",   // or "#000" if using on very light bg
 };
 

@@ -222,7 +222,7 @@ import {
           </Box>
           <Box sx={{ display: 'flex' }}>
             {subtitle && (
-              <Typography variant="h3" color="secondary" {...subtitleProps}>
+              <Typography variant="h3" color="secondary.dark" {...subtitleProps}>
                 {subtitle}
               </Typography>
             )}

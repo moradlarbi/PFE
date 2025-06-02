@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { getPassword } from "../models/authModels.js"; // Assurez-vous que ce modèle est correct
+import { getPassword } from "../models/authModels.js"; 
 
 async function isUserMidd(req, res, next) {
   try {
@@ -15,7 +15,7 @@ async function isUserMidd(req, res, next) {
     if (!result || result.length === 0) {
       return res.status(401).json({ status: 401, message: "Unauthorized2" });
     }
-    const user = result; // Assurez-vous d'accéder correctement à l'utilisateur
+    const user = result; 
 
     // Suppression du mot de passe de l'objet utilisateur avant de le stocker dans req.user
     const { password, ...userWithoutPassword } = user;

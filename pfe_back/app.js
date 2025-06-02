@@ -33,7 +33,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
-// Your API routes
 app.use('/api', routes);
 
 // Start the server

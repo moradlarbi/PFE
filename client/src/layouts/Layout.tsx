@@ -37,7 +37,7 @@ const Layout: React.FC = () => {
       <AppBar position="fixed" style={{ zIndex: 1300 }}>
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            MyApp
+            <img src="/logo_white.png" alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
           </Typography>
           {user && (
             <Button color="inherit" onClick={handleLogout}>
