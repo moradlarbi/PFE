@@ -35,9 +35,6 @@ router.get("/kpi", (req, res) => {
           return res.status(500).send('Error executing query');
         }
         const totalCapacite = results[0].total_capacite;
-        console.log(totalCapacite);
-        console.log(totalChauffeur);
-        console.log(totalPoubelle);
         // Send the response with all three values
         res.json({ totalPoubelle, totalChauffeur, totalCapacite });
       });

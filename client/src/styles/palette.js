@@ -20,7 +20,7 @@ function createGradient(color1, color2) {
 const SECONDARY = {
   lighter: "#F4F4F4",     // soft gray for UI elements
   light: "#DDE2DE",       // very light green-gray
-  main: "#6B8E23",        // OliveDrab – muted contrast green
+  main: "#6A6A6A",        // OliveDrab – muted contrast green
   dark: "#000",        // dark olive, could be used for hover
   contrastText: "#fff",   // or "#000" if using on very light bg
 };

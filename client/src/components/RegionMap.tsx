@@ -142,7 +142,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
           onChange={(e) => setPopulation(parseInt(e.target.value))}
         />
         <Button variant="contained" color="primary" onClick={handleSaveRegion}>
-          Save Region
+          Enregistrer Region
         </Button>
       </Box>
       <MapContainer

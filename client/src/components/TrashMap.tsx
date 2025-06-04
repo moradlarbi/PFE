@@ -250,7 +250,7 @@ const TrashMap: React.FC<RegionProps> = ({  handleRefresh }) => {
           </Select>
         </FormControl>
         <Button variant="contained" color="primary" onClick={handleSaveMarkers}>
-          Save Markers
+          Sauvegarder
         </Button>
       </Box>
       {/* @ts-ignore */}

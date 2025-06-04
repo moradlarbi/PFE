@@ -24,7 +24,7 @@ export default function InputOutlined() {
 
           '&.Mui-focused': {
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: info.main,
+              borderColor: secondary.light,
             },
           },
         },

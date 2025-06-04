@@ -154,11 +154,11 @@ const RegionPage = () => {
                   Swal.fire({
                     icon: "warning",
                     title: "Êtes-vous sûr ?",
-                    text: "Your changes will not be saved!",
+                    text: "Tes changements seront pas sauvegardés",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, discard changes!",
+                    confirmButtonText: "Oui, supprimer les modifications",
                   }).then((result : any) => {
                     if (result.isConfirmed) {
                       setOpenDialog(false);

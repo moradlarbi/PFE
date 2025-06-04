@@ -95,7 +95,7 @@ router.get('/predict_all', async (req, res) => {
 
       // Appel à l'API Flask
       const response = await axios.post('https://probable-chainsaw-5r6j9x5xx96cp6vj-5001.app.github.dev/predict', inputData);
-      //console.log("Réponse du modèle Flask reçue.");
+      console.log("Réponse du modèle Flask reçue.");
 
       // Récupération des prédictions
       const predictions = response.data.predictions.map((pred, index) => ({

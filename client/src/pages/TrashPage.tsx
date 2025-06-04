@@ -51,11 +51,11 @@ const TrashPage = () => {
             Swal.fire({
               icon: "warning",
               title: "Êtes-vous sûr ?",
-              text: "Your changes will not be saved!",
+              text: "Tes changements seront pas sauvegardés",
               showCancelButton: true,
               confirmButtonColor: "#3085d6",
               cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, discard changes!",
+              confirmButtonText: "Oui, supprimer les modifications",
             }).then((result : any) => {
               if (result.isConfirmed) {
                 setOpenDialog(false);
@@ -130,15 +130,15 @@ const TrashPage = () => {
                   color: "error",
                 },
             },
-            {
-              label: "Impression",
-              icon: <Print />,
-              action: Printaction,
-              ButtonProps: {
-                variant: "outlined",
-                color: "inherit",
-              },
-            },
+            // {
+            //   label: "Impression",
+            //   icon: <Print />,
+            //   action: Printaction,
+            //   ButtonProps: {
+            //     variant: "outlined",
+            //     color: "inherit",
+            //   },
+            // },
           {
             label: "Ajouter un modèle",
             icon: <Add />,
