@@ -39,7 +39,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
   const [currentPolygon, setCurrentPolygon] = useState<LatLngExpression[]>([]);
   const [depot, setDepot] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isDrawing, setIsDrawing] = useState(true);
-
+  const [refLocal, setRefLocal] = useState(false);
   const handleSaveRegion = async () => {
     if (currentPolygon.length === 0 || !regionName || population <= 0 || !depot) {
       alert('Please complete the region details and specify a depot point.');
@@ -59,11 +59,12 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: `${regionName} added successfully`,
+          title: `${regionName} a été ajouté avec succès`,
           showConfirmButton: false,
           timer: 1500,
         });
         handleRefresh();
+        setRefLocal(!refLocal); // Trigger re-fetch of regions
       } else {
         throw new Error("Failed to add region");
       }
@@ -125,7 +126,7 @@ const RegionMap: React.FC<RegionProps> = ({ add, handleRefresh }) => {
     };
 
     getData();
-  }, []);
+  }, [refLocal]);
 
   return (
     <Box>

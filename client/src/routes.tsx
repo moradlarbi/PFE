@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -12,18 +12,33 @@ import TrashPage from './pages/TrashPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 
+const LastPathTracker: React.FC = () => {
+    const location = useLocation();
+    useEffect(() => {
+        const publicPaths = ['/login', '/signup'];
+        if (!publicPaths.includes(location.pathname)) {
+            localStorage.setItem('lastPath', location.pathname);
+        }
+    }, [location]);
+    return null;
+};
+
 const AppRoutes: React.FC = () => {
-    const { user } = useAuth();
+    const { loading } = useAuth();
+
+    if (loading) {
+        return <div style={{ textAlign: 'center', marginTop: '20%' }}>Loading...</div>;
+    }
 
     return (
+        <>
+            <LastPathTracker />
             <Routes>
                 <Route element={<PublicRoute />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignupPage />} />
                 </Route>
 
-
-                {/* Routes protégées */}
                 <Route element={<ProtectedRoute />}>
                     <Route element={<Layout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
@@ -35,9 +50,10 @@ const AppRoutes: React.FC = () => {
                     </Route>
                 </Route>
 
-                {/* Redirection par défaut */}
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
+        </>
+            
     );
 };
 

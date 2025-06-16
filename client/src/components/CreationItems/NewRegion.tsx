@@ -33,7 +33,7 @@ const fields = [
 
 
 
-interface NewCamionProps {
+interface NewRegionProps {
   open: boolean;
   handleClose: () => void;
   handleCloseUpdated: () => void;
@@ -42,7 +42,7 @@ interface NewCamionProps {
   setItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const NewRegion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
+const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
   const [checked, setChecked] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
 

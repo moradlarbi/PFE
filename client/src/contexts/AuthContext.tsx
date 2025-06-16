@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('token', token);
 
             dispatch({ type: 'LOGIN', payload: { email: response.data.data.email, id: response.data.data.id } });
-            navigate('/dashboard');
+            navigate('/region');
         } catch (error) {
             console.error('Failed to login:', error);
             throw error;
