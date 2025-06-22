@@ -92,7 +92,7 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
   };
 
   const editOne = async (values: any) => {
-    let newValues = { ...values, active: !checked };
+    let newValues = { ...values};
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)
@@ -215,14 +215,6 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
                 )
               )}
             </Box>
-            <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <Typography>En sommeil</Typography>
-              <Switch
-                checked={checked}
-                onChange={(e) => setChecked(e.target.checked)}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            </Box>
           </DialogContent>
           <DialogActions>
             <Button type="submit" variant="contained" color="primary">
@@ -269,14 +261,6 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
                   />
                 )
               )}
-            </Box>
-            <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <Typography>En sommeil</Typography>
-              <Switch
-                checked={checked}
-                onChange={(e) => setChecked(e.target.checked)}
-                inputProps={{ "aria-label": "controlled" }}
-              />
             </Box>
           </DialogContent>
           <DialogActions>

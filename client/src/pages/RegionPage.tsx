@@ -199,7 +199,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "success",
-                          title: `${res.data.nom ?? "region"} a bien été désactivé`,
+                          title: `Les régions séléctionnées ont bien été désactivées`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -209,7 +209,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `${res.data.nom ?? "region"} n'a pas été désactivé`,
+                          title: `Les régions séléctionnées n'ont pas été désactivées`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -220,7 +220,7 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `region n'a pas été désactivé`,
+                          title: `Les régions séléctionnées n'ont pas été désactivées`,
                           showConfirmButton: false,
                           timer: 1500,
                         });

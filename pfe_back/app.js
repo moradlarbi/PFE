@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 const allowedOrigins = [
   'https://probable-chainsaw-5r6j9x5xx96cp6vj-3001.app.github.dev',
-  'http://localhost:3000'
+  'http://localhost:3001'
 ];
 
 const corsOptions = {

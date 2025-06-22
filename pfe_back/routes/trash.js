@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Get all Trash
 const constructQuery = (query) => {
-  let baseQuery = 'SELECT * FROM trash';
+  let baseQuery = 'SELECT * FROM trash JOIN Region on trash.idRegion = region.id where region.active = 1';
   const whereClauses = [];
   const orderClauses = [];
   let limitClause = '';

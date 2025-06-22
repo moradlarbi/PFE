@@ -14,8 +14,6 @@ import { editOperation, editStatus } from '../api/camion';
 import {  addOperation, editOperation as editModel} from '../api/modeleCamion'
 import Swal from 'sweetalert2';
 import { Border } from '../components/Border';
-import NewCamion from '../components/CreationItems/NewCamion';
-import RegionMap from '../components/RegionMap';
 import NewModeleTrash from '../components/CreationItems/NewModeleTrash';
 import TrashMap from '../components/TrashMap';
 const TrashPage = () => {

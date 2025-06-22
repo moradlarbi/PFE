@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: "https://probable-chainsaw-5r6j9x5xx96cp6vj-3000.app.github.dev/api",
+    baseURL: "http://localhost:3000/api",
     headers: {
         'Content-Type': 'application/json',
     },

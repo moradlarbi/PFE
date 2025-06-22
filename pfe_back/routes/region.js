@@ -94,7 +94,7 @@ router.get('/predict_all', async (req, res) => {
       }));
 
       // Appel à l'API Flask
-      const response = await axios.post('https://probable-chainsaw-5r6j9x5xx96cp6vj-5001.app.github.dev/predict', inputData);
+      const response = await axios.post('http://127.0.0.1:5001/predict', inputData);
       console.log("Réponse du modèle Flask reçue.");
 
       // Récupération des prédictions
@@ -359,8 +359,8 @@ router.put('/active/:id', async (req, res) => {
 // Update an existing Region
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  const { nom, population } = req.body;
-  update(id, nom, population, (err) => {
+  const { nom, population, active } = req.body;
+  update(id, nom, population, active, (err) => {
     if (err) {
       res.status(500).send(err);
     } else {

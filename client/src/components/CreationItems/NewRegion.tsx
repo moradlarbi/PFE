@@ -88,7 +88,7 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
   };
 
   const editOne = async (values: any) => {
-    let newValues = { ...values, active: !checked };
+    let newValues = { ...values };
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)
@@ -265,8 +265,8 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <Typography>En sommeil</Typography>
               <Switch
-                checked={checked}
-                onChange={(e) => setChecked(e.target.checked)}
+                checked={!item.active}
+                onChange={(e) => setItem({ ...item, active: !e.target.checked })}
                 inputProps={{ "aria-label": "controlled" }}
               />
             </Box>

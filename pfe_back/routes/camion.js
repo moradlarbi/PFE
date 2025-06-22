@@ -39,15 +39,7 @@ const constructQuery = (query) => {
     }
   }
 
-  // Pagination
-  if (query.pagination) {
-    if (query.pagination.page && query.pagination.pageSize) {
-      const page = parseInt(query.pagination.page, 10);
-      const pageSize = parseInt(query.pagination.pageSize, 10);
-      offsetClause = `OFFSET ${(page - 1) * pageSize}`;
-      limitClause = `LIMIT ${pageSize}`;
-    }
-  }
+  
 
   // Construct the final query
   if (whereClauses.length > 0) {
