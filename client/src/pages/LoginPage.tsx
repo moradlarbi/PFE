@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Box, Typography, Link } from '@mui/material';
+import { TextField, Button, Container, Box, Typography, Link,InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { InputAdornment, IconButton } from '@mui/material';
@@ -9,6 +10,7 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -67,7 +69,11 @@ const LoginPage: React.FC = () => {
                     </Button>
                 </form>
                 {/* <Typography variant="body2" align="center" marginTop={2}>
+<<<<<<< Updated upstream
                     Don't have an account? <Link href="/signup" color="primary">Sign Up</Link>
+=======
+                    Vous n'avez pas de compte? <Link href="/signup" color="primary">Sign Up</Link>
+>>>>>>> Stashed changes
                 </Typography> */}
             </Box>
         </Container>

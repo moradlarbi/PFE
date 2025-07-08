@@ -54,7 +54,7 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
 
   const addOne = async (values: RegisterInput) => {
     let nom = "Le modèle " + values.name;
-    let newValues = { ...values, active: !checked };
+    let newValues = { ...values };
     console.log(newValues);
 
     await addOperation({ ...newValues })
@@ -92,7 +92,11 @@ const NewModeleTrash: React.FC<NewCamionProps> = ({ open, handleClose, handleClo
   };
 
   const editOne = async (values: any) => {
+<<<<<<< Updated upstream
     let newValues = { ...values};
+=======
+    let newValues = { ...values };
+>>>>>>> Stashed changes
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)

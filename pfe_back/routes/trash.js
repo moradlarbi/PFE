@@ -64,7 +64,7 @@ const constructQuery = (query) => {
 
 router.get('/', async (req, res) => {
   try {
-    const query = constructQuery(req.query);
+    const query = "SELECT T.* FROM Trash T LEFT JOIN region R ON T.idRegion = R.id where R.active = 1";
     const results = await new Promise((resolve, reject) => {
       getAll(query, (err, results) => {
         if (err) {

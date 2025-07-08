@@ -430,11 +430,11 @@ const NewDriver: React.FC<NewDriverProps> = ({ open, handleClose, handleCloseUpd
               <Switch
                 checked={!item.active}
                 onChange={(e) => {
-                  setItem({ ...item, active: !e.target.checked });
+                  setItem({ ...item, active: !e.target.checked })
+                  setFieldsChanged(true);
                   setRefresh(!refresh);
                 }}
                 inputProps={{ "aria-label": "controlled" }}
-                sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
               />
             </Box>
           </DialogContent>

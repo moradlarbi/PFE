@@ -147,7 +147,6 @@ const RegionPage = () => {
       let open = Boolean(anchorEl);
       const [openDialog, setOpenDialog] = useState(false)
 
-
   return (
       <>
       {openDialog && <NewRegion handleClose={() => setOpenDialog(false)} handleCloseUpdated={() => {
@@ -199,7 +198,11 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "success",
+<<<<<<< Updated upstream
                           title: `Les régions séléctionnées ont bien été désactivées`,
+=======
+                          title: `L'opération de désactivation a été effectuée`,
+>>>>>>> Stashed changes
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -209,7 +212,11 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
+<<<<<<< Updated upstream
                           title: `Les régions séléctionnées n'ont pas été désactivées`,
+=======
+                          title: `L'opération de désactivation n'a pas été effectuée`,
+>>>>>>> Stashed changes
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -220,7 +227,11 @@ const RegionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
+<<<<<<< Updated upstream
                           title: `Les régions séléctionnées n'ont pas été désactivées`,
+=======
+                          title: `L'opération de désactivation n'a pas été effectuée`,
+>>>>>>> Stashed changes
                           showConfirmButton: false,
                           timer: 1500,
                         });

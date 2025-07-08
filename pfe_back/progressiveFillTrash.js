@@ -32,7 +32,7 @@ const getAllTrashIds = () => {
   
   // Function to start the update process for a single trash can
   const startUpdatingTrash = (id) => {
-    const randomInterval = Math.random() * 60000 + 30000; // Random interval between 30s to 90s
+    const randomInterval = Math.random() * 60000 + 30000; // Random interval 
     const randomIncrement = Math.floor(Math.random() * 10) + 1; // Random increment between 1% to 10%
   
     setInterval(() => {

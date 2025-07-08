@@ -109,7 +109,11 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
   };
 
   const editOne = async (values: any) => {
+<<<<<<< Updated upstream
     let newValues = { ...values};
+=======
+    let newValues = { ...values };
+>>>>>>> Stashed changes
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)
@@ -325,7 +329,15 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
               <Typography>En sommeil</Typography>
               <Switch
                 checked={!item.active}
+<<<<<<< Updated upstream
                 onChange={(e) => setItem({ ...item, active: !e.target.checked })}
+=======
+                onChange={(e) => {
+                  setItem({ ...item, active: !e.target.checked })
+                  setFieldsChanged(true);
+                  setRefresh(!refresh);
+                }}
+>>>>>>> Stashed changes
                 inputProps={{ "aria-label": "controlled" }}
               />
             </Box>
