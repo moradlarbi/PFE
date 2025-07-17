@@ -199,6 +199,7 @@ const RegionPage = () => {
                           position: "center",
                           icon: "success",
                           title: `L'opération de désactivation a été effectuée`,
+
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -209,6 +210,7 @@ const RegionPage = () => {
                           position: "center",
                           icon: "error",
                           title: `L'opération de désactivation n'a pas été effectuée`,
+
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -220,6 +222,7 @@ const RegionPage = () => {
                           position: "center",
                           icon: "error",
                           title: `L'opération de désactivation n'a pas été effectuée`,
+
                           showConfirmButton: false,
                           timer: 1500,
                         });

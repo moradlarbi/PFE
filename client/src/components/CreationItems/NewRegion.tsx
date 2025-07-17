@@ -139,7 +139,6 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
     }
   }, [isSubmitSuccessful, reset]);
 
-
   const onSubmitHandler: SubmitHandler<RegisterInput> = (values) => {
     if (Object.keys(errors).length === 0) {
       addOne(values);
