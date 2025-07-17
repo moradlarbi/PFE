@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Box, Typography, Link } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
+import { TextField, Button, Container, Box, Typography, Link,InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { InputAdornment, IconButton } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const { login } = useAuth();
     const [error, setError] = useState<string | null>(null);
+    
+    const { login } = useAuth();
+    
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -67,7 +68,7 @@ const LoginPage: React.FC = () => {
                     </Button>
                 </form>
                 {/* <Typography variant="body2" align="center" marginTop={2}>
-                    Don't have an account? <Link href="/signup" color="primary">Sign Up</Link>
+                    Vous n'avez pas de compte? <Link href="/signup" color="primary">Sign Up</Link>
                 </Typography> */}
             </Box>
         </Container>

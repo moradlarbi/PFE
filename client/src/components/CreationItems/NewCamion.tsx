@@ -109,7 +109,7 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
   };
 
   const editOne = async (values: any) => {
-    let newValues = { ...values};
+    let newValues = { ...values };
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)
@@ -325,7 +325,11 @@ const NewCamion: React.FC<NewCamionProps> = ({ open, handleClose, handleCloseUpd
               <Typography>En sommeil</Typography>
               <Switch
                 checked={!item.active}
-                onChange={(e) => setItem({ ...item, active: !e.target.checked })}
+                onChange={(e) => {
+                  setItem({ ...item, active: !e.target.checked })
+                  setFieldsChanged(true);
+                  setRefresh(!refresh);
+                }}
                 inputProps={{ "aria-label": "controlled" }}
               />
             </Box>

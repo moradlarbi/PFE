@@ -384,7 +384,7 @@ const CamionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "success",
-                          title: `Le camion a bien été désactivé`,
+                          title: `L'opération de désactivation a été effectuée`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -394,7 +394,7 @@ const CamionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `Le camion n'a pas été désactivé`,
+                          title: `L'opération de désactivation n'a pas été effectuée`,
                           showConfirmButton: false,
                           timer: 1500,
                         });
@@ -405,7 +405,7 @@ const CamionPage = () => {
                         Swal.fire({
                           position: "center",
                           icon: "error",
-                          title: `camion n'a pas été désactivé`,
+                          title: `L'opération de désactivation n'a pas été effectuée`,
                           showConfirmButton: false,
                           timer: 1500,
                         });

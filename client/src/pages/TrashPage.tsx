@@ -79,55 +79,6 @@ const TrashPage = () => {
         title="Modèles de dépotoires"
         subtitle="Visualiser, modifier ou gérer vos modèles de dépotoires."
         actions={[
-            {
-                label: `Désactiver (${
-                    selectedRows?.length ? selectedRows?.length : 0
-                  })`,
-                icon: <Delete />,
-                action: () => {
-                  selectedRows?.map(async (id) => {
-                    await editStatus({active:false}, id)
-                    .then((res) => {
-                      console.log(res)
-                      if (res.status === 200) {
-                        Swal.fire({
-                          position: "center",
-                          icon: "success",
-                          title: `Le modèle a bien été désactivé`,
-                          showConfirmButton: false,
-                          timer: 1500,
-                        });
-                        setrefresh(!refresh)
-                      }
-                      else {
-                        Swal.fire({
-                          position: "center",
-                          icon: "error",
-                          title: `Le modèle n'a pas été désactivé`,
-                          showConfirmButton: false,
-                          timer: 1500,
-                        });
-                      }
-                    })
-                    .catch((e) => {
-                      console.log(e)
-                        Swal.fire({
-                          position: "center",
-                          icon: "error",
-                          title: `le modèle n'a pas été désactivé`,
-                          showConfirmButton: false,
-                          timer: 1500,
-                        });
-                      
-                      
-                    })
-                  })
-                },
-                ButtonProps: {
-                  variant: "outlined",
-                  color: "error",
-                },
-            },
             // {
             //   label: "Impression",
             //   icon: <Print />,

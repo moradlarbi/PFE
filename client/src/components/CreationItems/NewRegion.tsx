@@ -42,7 +42,7 @@ interface NewRegionProps {
   setItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpdated, handleRefresh, item, setItem }) => {
+const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpdated,handleRefresh, item, setItem }) => {
   const [checked, setChecked] = useState(false);
   const [fieldsChanged, setFieldsChanged] = useState(false);
 
@@ -88,7 +88,7 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
   };
 
   const editOne = async (values: any) => {
-    let newValues = { ...values };
+    let newValues = { ...values};
     console.log(newValues);
 
     await editOperation({ ...newValues }, values.id)
@@ -138,6 +138,7 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
       reset();
     }
   }, [isSubmitSuccessful, reset]);
+
 
   const onSubmitHandler: SubmitHandler<RegisterInput> = (values) => {
     if (Object.keys(errors).length === 0) {
@@ -266,7 +267,11 @@ const NewRegion: React.FC<NewRegionProps> = ({ open, handleClose, handleCloseUpd
               <Typography>En sommeil</Typography>
               <Switch
                 checked={!item.active}
-                onChange={(e) => setItem({ ...item, active: !e.target.checked })}
+                onChange={(e) => {
+                  setItem({ ...item, active: !e.target.checked })
+                  setFieldsChanged(true);
+                  setRefresh(!refresh);
+                }}
                 inputProps={{ "aria-label": "controlled" }}
               />
             </Box>

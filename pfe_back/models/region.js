@@ -32,9 +32,9 @@ const create = (nom, population,depotLongitude, depotLatitude, callback) => {
   db.query(query, [nom, population,depotLongitude, depotLatitude], callback);
 };
 
-const update = (id, nom, population, active, callback) => {
-  const query = 'UPDATE Region SET nom = ?, population = ?, active= ? WHERE id = ?';
-  db.query(query, [nom, population, active, id], callback);
+const update = (id, nom, population,active, callback) => {
+  const query = 'UPDATE Region SET nom = ?, population = ?, active = ? WHERE id = ?';
+  db.query(query, [nom, population,active, id], callback);
 };
 
 const deleteRegion = (id, callback) => {
